@@ -1,0 +1,106 @@
+// Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(EDITOR)
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+// 推文表
+model Post {
+  id          String      @id @default(uuid())
+  title       String
+  slug        String      @unique
+  content     Json
+  excerpt     String
+  coverImage  String
+  status      PostStatus  @default(DRAFT)
+  publishedAt DateTime?
+  authorId    String
+  author      User        @relation(fields: [authorId], references: [id])
+  viewCount   Int         @default(0)
+  tags        PostTag[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("posts")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// 标签表
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  posts     PostTag[]
+  createdAt DateTime  @default(now())
+
+  @@map("tags")
+}
+
+// 推文标签关联表
+model PostTag {
+  postId String
+  tagId  String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("post_tags")
+}
+
+// 广告表
+model Advertisement {
+  id               String    @id @default(uuid())
+  title            String
+  imageUrl         String
+  linkUrl          String
+  position         AdPosition
+  startDate        DateTime
+  endDate          DateTime
+  clickCount       Int       @default(0)
+  impressionCount  Int       @default(0)
+  status           AdStatus  @default(ACTIVE)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@map("advertisements")
+}
+
+enum AdPosition {
+  BANNER
+  SIDEBAR
+  INLINE
+}
+
+enum AdStatus {
+  ACTIVE
+  INACTIVE
+}

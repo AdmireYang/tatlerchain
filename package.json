@@ -1,0 +1,27 @@
+{
+  "name": "port-magazine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Port Magazine - Monorepo 项目",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "web:dev": "pnpm --filter @port/web dev",
+    "admin:dev": "pnpm --filter @port/admin dev",
+    "api:dev": "pnpm --filter @port/api dev"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "turbo": "^1.11.0",
+    "prettier": "^3.1.1",
+    "eslint": "^8.56.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
