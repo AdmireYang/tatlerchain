@@ -9,21 +9,7 @@ dist/
 .output/
 build/
 
-# 环境变量
-.env
-.env.local
-.env.*.local
-
-# 日志
-logs/
-*.log
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 # 编辑器
-.vscode/
 .idea/
 *.swp
 *.swo
