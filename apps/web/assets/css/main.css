@@ -1,3 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 全局样式 */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: #1d1d1d;
+  }
+
+  /* Playfair Display 用于标题 */
+  h1,
+  h2,
+  h3 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  /* 按钮样式覆盖 Element Plus */
+  .el-button--primary {
+    --el-button-bg-color: #e63946 !important;
+    --el-button-border-color: #e63946 !important;
+    --el-button-hover-bg-color: #d62d3a !important;
+    --el-button-hover-border-color: #d62d3a !important;
+  }
+}
+
+@layer utilities {
+  /* 自定义工具类 */
+  .text-balance {
+    text-wrap: balance;
+  }
+}

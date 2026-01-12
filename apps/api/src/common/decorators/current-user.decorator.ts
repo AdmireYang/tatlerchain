@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 
 /**
  * 获取当前登录用户信息
@@ -10,14 +10,13 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
  */
 export const CurrentUser = createParamDecorator(
   (data: string | undefined, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    const user = request.user;
+    const request = ctx.switchToHttp().getRequest()
+    const user = request.user
 
     if (data) {
-      return user?.[data];
+      return user?.[data]
     }
 
-    return user;
-  },
-);
-
+    return user
+  }
+)

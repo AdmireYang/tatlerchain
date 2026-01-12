@@ -1,7 +1,7 @@
-import { Controller, Post, Get, Body, Query, Req } from '@nestjs/common';
-import { Request } from 'express';
-import { TrackService } from './track.service';
-import { TrackEventDto, BatchTrackEventDto } from './dto/track-event.dto';
+import { Controller, Post, Get, Body, Query, Req } from '@nestjs/common'
+import { Request } from 'express'
+import { TrackService } from './track.service'
+import { TrackEventDto, BatchTrackEventDto } from './dto/track-event.dto'
 
 @Controller('track')
 export class TrackController {
@@ -13,9 +13,9 @@ export class TrackController {
    */
   @Post()
   track(@Body() dto: TrackEventDto, @Req() req: Request) {
-    const ip = this.getClientIp(req);
-    this.trackService.track(dto, ip);
-    return { success: true };
+    const ip = this.getClientIp(req)
+    this.trackService.track(dto, ip)
+    return { success: true }
   }
 
   /**
@@ -24,9 +24,9 @@ export class TrackController {
    */
   @Post('batch')
   batchTrack(@Body() dto: BatchTrackEventDto, @Req() req: Request) {
-    const ip = this.getClientIp(req);
-    this.trackService.batchTrack(dto.events, ip);
-    return { success: true, count: dto.events.length };
+    const ip = this.getClientIp(req)
+    this.trackService.batchTrack(dto.events, ip)
+    return { success: true, count: dto.events.length }
   }
 
   /**
@@ -38,14 +38,14 @@ export class TrackController {
     @Query('code') code?: string,
     @Query('type') type?: string,
     @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
+    @Query('endDate') endDate?: string
   ) {
     return this.trackService.getStats({
       code,
       type,
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
-    });
+    })
   }
 
   /**
@@ -60,7 +60,7 @@ export class TrackController {
     @Query('type') type?: string,
     @Query('pagePath') pagePath?: string,
     @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
+    @Query('endDate') endDate?: string
   ) {
     return this.trackService.findAll({
       page: page ? Number(page) : 1,
@@ -70,15 +70,14 @@ export class TrackController {
       pagePath,
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
-    });
+    })
   }
 
   private getClientIp(request: Request): string {
-    const forwarded = request.headers['x-forwarded-for'];
+    const forwarded = request.headers['x-forwarded-for']
     if (forwarded) {
-      return (typeof forwarded === 'string' ? forwarded : forwarded[0]).split(',')[0];
+      return (typeof forwarded === 'string' ? forwarded : forwarded[0]).split(',')[0]
     }
-    return request.ip || request.socket.remoteAddress || '';
+    return request.ip || request.socket.remoteAddress || ''
   }
 }
-

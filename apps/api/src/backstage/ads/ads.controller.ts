@@ -1,17 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Param,
-  Body,
-  Query,
-} from '@nestjs/common';
-import { AdsService } from '@/shared/services/ads.service';
-import { CreateAdDto } from './dto/create-ad.dto';
-import { UpdateAdDto } from './dto/update-ad.dto';
-import { QueryAdDto } from './dto/query-ad.dto';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common'
+import { AdsService } from '@/shared/services/ads.service'
+import { CreateAdDto } from './dto/create-ad.dto'
+import { UpdateAdDto } from './dto/update-ad.dto'
+import { QueryAdDto } from './dto/query-ad.dto'
 
 @Controller('backstage/ads')
 export class AdsController {
@@ -28,7 +19,7 @@ export class AdsController {
       pageSize: query.pageSize,
       status: query.status,
       category: query.category,
-    });
+    })
   }
 
   /**
@@ -37,7 +28,7 @@ export class AdsController {
    */
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.adsService.findById(id);
+    return this.adsService.findById(id)
   }
 
   /**
@@ -46,7 +37,7 @@ export class AdsController {
    */
   @Post()
   async create(@Body() createAdDto: CreateAdDto) {
-    return this.adsService.create(createAdDto);
+    return this.adsService.create(createAdDto)
   }
 
   /**
@@ -55,7 +46,7 @@ export class AdsController {
    */
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateAdDto: UpdateAdDto) {
-    return this.adsService.update(id, updateAdDto);
+    return this.adsService.update(id, updateAdDto)
   }
 
   /**
@@ -64,7 +55,7 @@ export class AdsController {
    */
   @Put(':id/publish')
   async publish(@Param('id') id: string) {
-    return this.adsService.publish(id);
+    return this.adsService.publish(id)
   }
 
   /**
@@ -73,7 +64,6 @@ export class AdsController {
    */
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.adsService.delete(id);
+    return this.adsService.delete(id)
   }
 }
-

@@ -1,8 +1,8 @@
-import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { Public, CurrentUser } from '@/common/decorators';
-import { JwtAuthGuard } from '@/common/guards';
+import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common'
+import { AuthService } from './auth.service'
+import { LoginDto } from './dto/login.dto'
+import { Public, CurrentUser } from '@/common/decorators'
+import { JwtAuthGuard } from '@/common/guards'
 
 @Controller('backstage/auth')
 export class AuthController {
@@ -15,7 +15,7 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+    return this.authService.login(loginDto)
   }
 
   /**
@@ -25,7 +25,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getProfile(@CurrentUser('id') userId: string) {
-    return this.authService.getProfile(userId);
+    return this.authService.getProfile(userId)
   }
 
   /**
@@ -35,7 +35,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout() {
-    return { message: '登出成功' };
+    return { message: '登出成功' }
   }
 }
-

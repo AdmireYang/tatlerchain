@@ -1,2 +1,1 @@
-export * from './backstage.module';
-
+export * from './backstage.module'

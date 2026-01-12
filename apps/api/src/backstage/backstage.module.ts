@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthModule } from './auth/auth.module';
-import { DashboardModule } from './dashboard/dashboard.module';
-import { BackstagePostsModule } from './posts/posts.module';
-import { BackstageAdsModule } from './ads/ads.module';
-import { BackstageUsersModule } from './users/users.module';
-import { UploadModule } from './upload/upload.module';
-import { LogsModule } from './logs/logs.module';
-import { JwtAuthGuard, RolesGuard } from '@/common/guards';
+import { Module } from '@nestjs/common'
+import { APP_GUARD } from '@nestjs/core'
+import { AuthModule } from './auth/auth.module'
+import { DashboardModule } from './dashboard/dashboard.module'
+import { BackstagePostsModule } from './posts/posts.module'
+import { BackstageAdsModule } from './ads/ads.module'
+import { BackstageUsersModule } from './users/users.module'
+import { UploadModule } from './upload/upload.module'
+import { LogsModule } from './logs/logs.module'
+import { JwtAuthGuard, RolesGuard } from '@/common/guards'
 
 @Module({
   imports: [
@@ -33,4 +33,3 @@ import { JwtAuthGuard, RolesGuard } from '@/common/guards';
   ],
 })
 export class BackstageModule {}
-

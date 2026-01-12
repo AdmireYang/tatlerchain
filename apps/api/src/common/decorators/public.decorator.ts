@@ -1,9 +1,8 @@
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from '@nestjs/common'
 
-export const IS_PUBLIC_KEY = 'isPublic';
+export const IS_PUBLIC_KEY = 'isPublic'
 
 /**
  * 标记接口为公开访问，无需 JWT 认证
  */
-export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
-
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true)

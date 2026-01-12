@@ -1,23 +1,20 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { DatabaseModule } from '@/database/database.module';
-import { SharedModule } from '@/shared/shared.module';
-import { LogModule } from '@/common/log.module';
-import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
-import { TrackModule } from '@/modules/track/track.module';
-import { WebModule } from '@/web/web.module';
-import { BackstageModule } from '@/backstage/backstage.module';
+import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { DatabaseModule } from '@/database/database.module'
+import { SharedModule } from '@/shared/shared.module'
+import { LogModule } from '@/common/log.module'
+import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor'
+import { TrackModule } from '@/modules/track/track.module'
+import { WebModule } from '@/web/web.module'
+import { BackstageModule } from '@/backstage/backstage.module'
 
 @Module({
   imports: [
     // 配置模块
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [
-        '.env.local',
-        '.env',
-      ],
+      envFilePath: ['.env.local', '.env'],
     }),
 
     // 数据库模块

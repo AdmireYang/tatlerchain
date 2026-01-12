@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { DashboardController } from './dashboard.controller';
-import { DashboardService } from './dashboard.service';
-import { SharedModule } from '@/shared/shared.module';
+import { Module } from '@nestjs/common'
+import { DashboardController } from './dashboard.controller'
+import { DashboardService } from './dashboard.service'
+import { SharedModule } from '@/shared/shared.module'
 
 @Module({
   imports: [SharedModule],
@@ -9,4 +9,3 @@ import { SharedModule } from '@/shared/shared.module';
   providers: [DashboardService],
 })
 export class DashboardModule {}
-

@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = function (options) {
   return {
@@ -12,6 +12,5 @@ module.exports = function (options) {
         '@port/utils': path.resolve(__dirname, '../../packages/utils/src'),
       },
     },
-  };
-};
-
+  }
+}

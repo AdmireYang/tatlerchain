@@ -1,12 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
-import { PrismaService } from '@/database/prisma.service';
-import { Role } from '@port/database';
-import * as bcrypt from 'bcryptjs';
-import { PaginatedResult } from '@/common/dto/pagination.dto';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common'
+import { PrismaService } from '@/database/prisma.service'
+import { Role } from '@port/database'
+import * as bcrypt from 'bcryptjs'
+import { PaginatedResult } from '@/common/dto/pagination.dto'
 
 @Injectable()
 export class UsersService {
@@ -18,7 +14,7 @@ export class UsersService {
   async findByEmail(email: string) {
     return this.prisma.user.findUnique({
       where: { email },
-    });
+    })
   }
 
   /**
@@ -35,23 +31,23 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
       },
-    });
+    })
 
     if (!user) {
-      throw new NotFoundException('用户不存在');
+      throw new NotFoundException('用户不存在')
     }
 
-    return user;
+    return user
   }
 
   /**
    * 获取所有用户列表
    */
   async findAll(options: { page?: number; pageSize?: number; role?: Role }) {
-    const { page = 1, pageSize = 10, role } = options;
-    const skip = (page - 1) * pageSize;
+    const { page = 1, pageSize = 10, role } = options
+    const skip = (page - 1) * pageSize
 
-    const where = role ? { role } : {};
+    const where = role ? { role } : {}
 
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
@@ -72,31 +68,26 @@ export class UsersService {
         },
       }),
       this.prisma.user.count({ where }),
-    ]);
+    ])
 
-    return new PaginatedResult(users, total, page, pageSize);
+    return new PaginatedResult(users, total, page, pageSize)
   }
 
   /**
    * 创建用户
    */
-  async create(data: {
-    email: string;
-    password: string;
-    name: string;
-    role?: Role;
-  }) {
+  async create(data: { email: string; password: string; name: string; role?: Role }) {
     // 检查邮箱是否已存在
     const existing = await this.prisma.user.findUnique({
       where: { email: data.email },
-    });
+    })
 
     if (existing) {
-      throw new ConflictException('邮箱已存在');
+      throw new ConflictException('邮箱已存在')
     }
 
     // 加密密码
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const hashedPassword = await bcrypt.hash(data.password, 10)
 
     return this.prisma.user.create({
       data: {
@@ -111,7 +102,7 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
       },
-    });
+    })
   }
 
   /**
@@ -120,11 +111,11 @@ export class UsersService {
   async update(
     id: string,
     data: {
-      email?: string;
-      password?: string;
-      name?: string;
-      role?: Role;
-    },
+      email?: string
+      password?: string
+      name?: string
+      role?: Role
+    }
   ) {
     // 如果更新邮箱，检查是否已存在
     if (data.email) {
@@ -133,16 +124,16 @@ export class UsersService {
           email: data.email,
           id: { not: id },
         },
-      });
+      })
 
       if (existing) {
-        throw new ConflictException('邮箱已存在');
+        throw new ConflictException('邮箱已存在')
       }
     }
 
     // 如果更新密码，加密
     if (data.password) {
-      data.password = await bcrypt.hash(data.password, 10);
+      data.password = await bcrypt.hash(data.password, 10)
     }
 
     return this.prisma.user.update({
@@ -156,7 +147,7 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
       },
-    });
+    })
   }
 
   /**
@@ -165,14 +156,13 @@ export class UsersService {
   async delete(id: string) {
     return this.prisma.user.delete({
       where: { id },
-    });
+    })
   }
 
   /**
    * 验证用户密码
    */
   async validatePassword(user: { password: string }, password: string) {
-    return bcrypt.compare(password, user.password);
+    return bcrypt.compare(password, user.password)
   }
 }
-

@@ -62,6 +62,7 @@ pnpm build
 ## 🛠️ 技术栈
 
 ### 前端
+
 - Vue 3 + TypeScript
 - Nuxt 3 (前台 SSR)
 - Vite (后台 SPA)
@@ -70,6 +71,7 @@ pnpm build
 - Element Plus / Naive UI
 
 ### 后端
+
 - Nest.js + TypeScript
 - Prisma ORM
 - PostgreSQL
@@ -77,6 +79,7 @@ pnpm build
 - JWT 认证
 
 ### DevOps
+
 - pnpm workspace
 - Turbo (构建优化)
 - Docker + Docker Compose

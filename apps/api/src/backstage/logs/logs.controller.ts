@@ -1,9 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { LogService } from '@/common/services/log.service';
-import { Roles } from '@/common/decorators';
-import { Role } from '@port/database';
-import { QueryLogDto } from './dto/query-log.dto';
+import { Controller, Get, Query } from '@nestjs/common'
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger'
+import { LogService } from '@/common/services/log.service'
+import { Roles } from '@/common/decorators'
+import { Role } from '@port/database'
+import { QueryLogDto } from './dto/query-log.dto'
 
 @ApiTags('backstage/logs')
 @ApiBearerAuth('JWT')
@@ -27,7 +27,7 @@ export class LogsController {
       userId: query.userId,
       startDate: query.startDate,
       endDate: query.endDate,
-    });
+    })
   }
 
   /**
@@ -38,7 +38,6 @@ export class LogsController {
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: '获取日志统计（仅管理员）' })
   async getStats() {
-    return this.logService.getStats();
+    return this.logService.getStats()
   }
 }
-

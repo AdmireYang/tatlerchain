@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '@/database/prisma.service';
-import { Prisma, PostStatus } from '@port/database';
-import { PaginatedResult } from '@/common/dto/pagination.dto';
-import { sanitizeRichContent } from '@/common/utils/sanitize.util';
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '@/database/prisma.service'
+import { Prisma, PostStatus } from '@port/database'
+import { PaginatedResult } from '@/common/dto/pagination.dto'
+import { sanitizeRichContent } from '@/common/utils/sanitize.util'
 
 @Injectable()
 export class PostsService {
@@ -11,18 +11,14 @@ export class PostsService {
   /**
    * 获取已发布的推文列表（前台使用）
    */
-  async findPublished(options: {
-    page?: number;
-    pageSize?: number;
-    category?: string;
-  }) {
-    const { page = 1, pageSize = 10, category } = options;
-    const skip = (page - 1) * pageSize;
+  async findPublished(options: { page?: number; pageSize?: number; category?: string }) {
+    const { page = 1, pageSize = 10, category } = options
+    const skip = (page - 1) * pageSize
 
     const where: Prisma.PostWhereInput = {
       status: PostStatus.PUBLISHED,
       ...(category && { category }),
-    };
+    }
 
     const [posts, total] = await Promise.all([
       this.prisma.post.findMany({
@@ -37,9 +33,9 @@ export class PostsService {
         },
       }),
       this.prisma.post.count({ where }),
-    ]);
+    ])
 
-    return new PaginatedResult(posts, total, page, pageSize);
+    return new PaginatedResult(posts, total, page, pageSize)
   }
 
   /**
@@ -65,33 +61,33 @@ export class PostsService {
           orderBy: { sortOrder: 'asc' },
         },
       },
-    });
+    })
 
     if (!post || post.status !== PostStatus.PUBLISHED) {
-      throw new NotFoundException('推文不存在');
+      throw new NotFoundException('推文不存在')
     }
 
     // 增加浏览次数
     await this.prisma.post.update({
       where: { id: post.id },
       data: { viewCount: { increment: 1 } },
-    });
+    })
 
-    return post;
+    return post
   }
 
   /**
    * 获取所有推文列表（后台使用）
    */
   async findAll(options: {
-    page?: number;
-    pageSize?: number;
-    status?: PostStatus;
-    search?: string;
-    category?: string;
+    page?: number
+    pageSize?: number
+    status?: PostStatus
+    search?: string
+    category?: string
   }) {
-    const { page = 1, pageSize = 10, status, search, category } = options;
-    const skip = (page - 1) * pageSize;
+    const { page = 1, pageSize = 10, status, search, category } = options
+    const skip = (page - 1) * pageSize
 
     const where: Prisma.PostWhereInput = {
       ...(status && { status }),
@@ -102,7 +98,7 @@ export class PostsService {
           { excerpt: { contains: search, mode: 'insensitive' } },
         ],
       }),
-    };
+    }
 
     const [posts, total] = await Promise.all([
       this.prisma.post.findMany({
@@ -117,9 +113,9 @@ export class PostsService {
         },
       }),
       this.prisma.post.count({ where }),
-    ]);
+    ])
 
-    return new PaginatedResult(posts, total, page, pageSize);
+    return new PaginatedResult(posts, total, page, pageSize)
   }
 
   /**
@@ -139,33 +135,33 @@ export class PostsService {
           orderBy: { sortOrder: 'asc' },
         },
       },
-    });
+    })
 
     if (!post) {
-      throw new NotFoundException('推文不存在');
+      throw new NotFoundException('推文不存在')
     }
 
-    return post;
+    return post
   }
 
   /**
    * 创建推文
    */
   async create(data: {
-    title: string;
-    slug: string;
-    content: any;
-    excerpt: string;
-    category: string;
-    coverImage: string;
-    detailImage?: { url: string; authorName?: string; authorLink?: string };
-    authorId: string;
-    advertisements?: { advertisementId: string; sortOrder?: number }[];
+    title: string
+    slug: string
+    content: any
+    excerpt: string
+    category: string
+    coverImage: string
+    detailImage?: { url: string; authorName?: string; authorLink?: string }
+    authorId: string
+    advertisements?: { advertisementId: string; sortOrder?: number }[]
   }) {
-    const { advertisements, content, detailImage, authorId, ...postData } = data;
+    const { advertisements, content, detailImage, authorId, ...postData } = data
 
     // 清洗富文本内容，防止 XSS 攻击
-    const sanitizedContent = sanitizeRichContent(content);
+    const sanitizedContent = sanitizeRichContent(content)
 
     return this.prisma.post.create({
       data: {
@@ -193,7 +189,7 @@ export class PostsService {
           orderBy: { sortOrder: 'asc' },
         },
       },
-    });
+    })
   }
 
   /**
@@ -202,28 +198,28 @@ export class PostsService {
   async update(
     id: string,
     data: {
-      title?: string;
-      slug?: string;
-      content?: any;
-      excerpt?: string;
-      category?: string;
-      coverImage?: string;
-      detailImage?: { url: string; authorName?: string; authorLink?: string };
-      status?: PostStatus;
-      advertisements?: { advertisementId: string; sortOrder?: number }[];
-    },
+      title?: string
+      slug?: string
+      content?: any
+      excerpt?: string
+      category?: string
+      coverImage?: string
+      detailImage?: { url: string; authorName?: string; authorLink?: string }
+      status?: PostStatus
+      advertisements?: { advertisementId: string; sortOrder?: number }[]
+    }
   ) {
-    const { advertisements, content, detailImage, ...postData } = data;
+    const { advertisements, content, detailImage, ...postData } = data
 
     // 如果有更新广告，先删除旧的关联
     if (advertisements) {
       await this.prisma.postAdvertisement.deleteMany({
         where: { postId: id },
-      });
+      })
     }
 
     // 清洗富文本内容，防止 XSS 攻击
-    const sanitizedContent = content ? sanitizeRichContent(content) : undefined;
+    const sanitizedContent = content ? sanitizeRichContent(content) : undefined
 
     return this.prisma.post.update({
       where: { id },
@@ -251,7 +247,7 @@ export class PostsService {
           orderBy: { sortOrder: 'asc' },
         },
       },
-    });
+    })
   }
 
   /**
@@ -264,7 +260,7 @@ export class PostsService {
         status: PostStatus.PUBLISHED,
         publishedAt: new Date(),
       },
-    });
+    })
   }
 
   /**
@@ -273,7 +269,7 @@ export class PostsService {
   async delete(id: string) {
     return this.prisma.post.delete({
       where: { id },
-    });
+    })
   }
 
   /**
@@ -287,39 +283,35 @@ export class PostsService {
       this.prisma.post.aggregate({
         _sum: { viewCount: true },
       }),
-    ]);
+    ])
 
     return {
       total,
       published,
       draft,
       totalViews: totalViews._sum.viewCount || 0,
-    };
+    }
   }
 
   /**
    * 获取相关文章
    * 优先返回同分类的文章，不足则按发布日期填充
    */
-  async findRelated(options: {
-    postId: string;
-    page?: number;
-    pageSize?: number;
-  }) {
-    const { postId, page = 1, pageSize = 6 } = options;
-    const skip = (page - 1) * pageSize;
+  async findRelated(options: { postId: string; page?: number; pageSize?: number }) {
+    const { postId, page = 1, pageSize = 6 } = options
+    const skip = (page - 1) * pageSize
 
     // 获取当前文章
     const currentPost = await this.prisma.post.findUnique({
       where: { id: postId },
-    });
+    })
 
     if (!currentPost) {
-      throw new NotFoundException('推文不存在');
+      throw new NotFoundException('推文不存在')
     }
 
     // 1. 先查找同分类的文章
-    let sameCategoryPosts: any[] = [];
+    let sameCategoryPosts: any[] = []
     if (currentPost.category) {
       sameCategoryPosts = await this.prisma.post.findMany({
         where: {
@@ -333,19 +325,19 @@ export class PostsService {
             select: { id: true, name: true },
           },
         },
-      });
+      })
     }
 
     // 2. 计算需要填充的数量
-    const totalNeeded = skip + pageSize;
-    const sameCategoryCount = sameCategoryPosts.length;
+    const totalNeeded = skip + pageSize
+    const sameCategoryCount = sameCategoryPosts.length
 
-    let allRelatedPosts = sameCategoryPosts;
+    let allRelatedPosts = sameCategoryPosts
 
     // 3. 如果同分类文章不够，按发布日期填充
     if (sameCategoryCount < totalNeeded) {
-      const excludeIds = [postId, ...sameCategoryPosts.map((p) => p.id)];
-      const fillCount = totalNeeded - sameCategoryCount;
+      const excludeIds = [postId, ...sameCategoryPosts.map((p) => p.id)]
+      const fillCount = totalNeeded - sameCategoryCount
 
       const fillPosts = await this.prisma.post.findMany({
         where: {
@@ -359,15 +351,15 @@ export class PostsService {
             select: { id: true, name: true },
           },
         },
-      });
+      })
 
-      allRelatedPosts = [...sameCategoryPosts, ...fillPosts];
+      allRelatedPosts = [...sameCategoryPosts, ...fillPosts]
     }
 
     // 4. 分页处理
-    const paginatedPosts = allRelatedPosts.slice(skip, skip + pageSize);
-    const total = allRelatedPosts.length;
+    const paginatedPosts = allRelatedPosts.slice(skip, skip + pageSize)
+    const total = allRelatedPosts.length
 
-    return new PaginatedResult(paginatedPosts, total, page, pageSize);
+    return new PaginatedResult(paginatedPosts, total, page, pageSize)
   }
 }

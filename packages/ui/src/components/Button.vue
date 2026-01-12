@@ -5,29 +5,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 interface Props {
-  type?: 'primary' | 'secondary' | 'danger';
-  size?: 'small' | 'medium' | 'large';
+  type?: 'primary' | 'secondary' | 'danger'
+  size?: 'small' | 'medium' | 'large'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'primary',
   size: 'medium',
-});
+})
 
 const emit = defineEmits<{
-  click: [event: MouseEvent];
-}>();
+  click: [event: MouseEvent]
+}>()
 
 const buttonClass = computed(() => {
-  return `btn btn-${props.type} btn-${props.size}`;
-});
+  return `btn btn-${props.type} btn-${props.size}`
+})
 
 const handleClick = (event: MouseEvent) => {
-  emit('click', event);
-};
+  emit('click', event)
+}
 </script>
 
 <style scoped>

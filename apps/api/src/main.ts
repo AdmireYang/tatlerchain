@@ -1,23 +1,23 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { join } from 'path';
-import { AppModule } from '@/app.module';
-import { HttpExceptionFilter } from '@/common/filters';
-import { TransformInterceptor } from '@/common/interceptors';
+import { NestFactory } from '@nestjs/core'
+import { ValidationPipe } from '@nestjs/common'
+import { NestExpressApplication } from '@nestjs/platform-express'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { join } from 'path'
+import { AppModule } from '@/app.module'
+import { HttpExceptionFilter } from '@/common/filters'
+import { TransformInterceptor } from '@/common/interceptors'
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
   // 启用 CORS
   app.enableCors({
     origin: true,
     credentials: true,
-  });
+  })
 
   // 全局前缀
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api')
 
   // 全局验证管道
   app.useGlobalPipes(
@@ -28,19 +28,19 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
-    }),
-  );
+    })
+  )
 
   // 全局异常过滤器
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter())
 
   // 全局响应拦截器
-  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalInterceptors(new TransformInterceptor())
 
   // 静态文件服务（上传文件）
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
-  });
+  })
 
   // Swagger API 文档配置
   const config = new DocumentBuilder()
@@ -54,7 +54,7 @@ async function bootstrap() {
         bearerFormat: 'JWT',
         description: '请输入 JWT Token',
       },
-      'JWT',
+      'JWT'
     )
     .addTag('web/posts', '前台 - 推文')
     .addTag('web/ads', '前台 - 广告')
@@ -66,9 +66,9 @@ async function bootstrap() {
     .addTag('backstage/dashboard', '后台 - 仪表盘')
     .addTag('backstage/logs', '后台 - 日志')
     .addTag('track', '埋点统计')
-    .build();
+    .build()
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
@@ -76,15 +76,15 @@ async function bootstrap() {
       filter: true,
       showRequestDuration: true,
     },
-  });
+  })
 
-  const port = process.env.PORT || 3001;
-  await app.listen(port);
+  const port = process.env.PORT || 3001
+  await app.listen(port)
 
-  console.log(`🚀 API 服务运行在: http://localhost:${port}`);
-  console.log(`📚 API 文档: http://localhost:${port}/docs`);
-  console.log(`📖 前台接口: http://localhost:${port}/api/web`);
-  console.log(`🔧 后台接口: http://localhost:${port}/api/backstage`);
+  console.log(`🚀 API 服务运行在: http://localhost:${port}`)
+  console.log(`📚 API 文档: http://localhost:${port}/docs`)
+  console.log(`📖 前台接口: http://localhost:${port}/api/web`)
+  console.log(`🔧 后台接口: http://localhost:${port}/api/backstage`)
 }
 
-bootstrap();
+bootstrap()

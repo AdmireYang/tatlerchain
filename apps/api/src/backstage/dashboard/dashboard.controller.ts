@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { DashboardService } from './dashboard.service';
+import { Controller, Get } from '@nestjs/common'
+import { DashboardService } from './dashboard.service'
 
 @Controller('backstage/dashboard')
 export class DashboardController {
@@ -11,7 +11,7 @@ export class DashboardController {
    */
   @Get()
   async getOverview() {
-    return this.dashboardService.getOverview();
+    return this.dashboardService.getOverview()
   }
 
   /**
@@ -20,7 +20,7 @@ export class DashboardController {
    */
   @Get('posts')
   async getPostsStats() {
-    return this.dashboardService.getPostsStats();
+    return this.dashboardService.getPostsStats()
   }
 
   /**
@@ -29,7 +29,6 @@ export class DashboardController {
    */
   @Get('ads')
   async getAdsStats() {
-    return this.dashboardService.getAdsStats();
+    return this.dashboardService.getAdsStats()
   }
 }
-

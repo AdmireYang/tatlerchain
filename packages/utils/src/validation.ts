@@ -2,16 +2,16 @@
  * 验证邮箱格式
  */
 export function validateEmail(email: string): boolean {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email);
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return re.test(email)
 }
 
 /**
  * 验证密码强度（至少8位，包含字母和数字）
  */
 export function validatePassword(password: string): boolean {
-  const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-  return re.test(password);
+  const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+  return re.test(password)
 }
 
 /**
@@ -19,9 +19,9 @@ export function validatePassword(password: string): boolean {
  */
 export function validateUrl(url: string): boolean {
   try {
-    new URL(url);
-    return true;
+    new URL(url)
+    return true
   } catch {
-    return false;
+    return false
   }
 }

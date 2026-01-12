@@ -1,18 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Param,
-  Body,
-  Query,
-} from '@nestjs/common';
-import { UsersService } from '@/shared/services/users.service';
-import { Roles } from '@/common/decorators';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { QueryUserDto } from './dto/query-user.dto';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common'
+import { UsersService } from '@/shared/services/users.service'
+import { Roles } from '@/common/decorators'
+import { CreateUserDto } from './dto/create-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
+import { QueryUserDto } from './dto/query-user.dto'
 
 @Controller('backstage/users')
 export class UsersController {
@@ -29,7 +20,7 @@ export class UsersController {
       page: query.page,
       pageSize: query.pageSize,
       role: query.role,
-    });
+    })
   }
 
   /**
@@ -39,7 +30,7 @@ export class UsersController {
   @Get(':id')
   @Roles('ADMIN')
   async findOne(@Param('id') id: string) {
-    return this.usersService.findById(id);
+    return this.usersService.findById(id)
   }
 
   /**
@@ -49,7 +40,7 @@ export class UsersController {
   @Post()
   @Roles('ADMIN')
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    return this.usersService.create(createUserDto)
   }
 
   /**
@@ -59,7 +50,7 @@ export class UsersController {
   @Put(':id')
   @Roles('ADMIN')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(id, updateUserDto)
   }
 
   /**
@@ -69,7 +60,6 @@ export class UsersController {
   @Delete(':id')
   @Roles('ADMIN')
   async remove(@Param('id') id: string) {
-    return this.usersService.delete(id);
+    return this.usersService.delete(id)
   }
 }
-

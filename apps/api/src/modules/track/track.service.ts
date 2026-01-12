@@ -1,11 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '@/database/prisma.service';
-import { TrackEventDto } from './dto/track-event.dto';
-import { TrackEventType as PrismaTrackEventType } from '@prisma/client';
+import { Injectable, Logger } from '@nestjs/common'
+import { PrismaService } from '@/database/prisma.service'
+import { TrackEventDto } from './dto/track-event.dto'
+import { TrackEventType as PrismaTrackEventType } from '@prisma/client'
 
 @Injectable()
 export class TrackService {
-  private readonly logger = new Logger(TrackService.name);
+  private readonly logger = new Logger(TrackService.name)
 
   constructor(private prisma: PrismaService) {}
 
@@ -14,8 +14,8 @@ export class TrackService {
    */
   track(data: TrackEventDto, ip?: string): void {
     this.saveEvent(data, ip).catch((error) => {
-      this.logger.error('埋点记录失败', error);
-    });
+      this.logger.error('埋点记录失败', error)
+    })
   }
 
   /**
@@ -23,8 +23,8 @@ export class TrackService {
    */
   batchTrack(events: TrackEventDto[], ip?: string): void {
     this.saveEvents(events, ip).catch((error) => {
-      this.logger.error('批量埋点记录失败', error);
-    });
+      this.logger.error('批量埋点记录失败', error)
+    })
   }
 
   /**
@@ -52,7 +52,7 @@ export class TrackService {
         extra: data.extra,
         duration: data.duration,
       },
-    });
+    })
   }
 
   /**
@@ -80,27 +80,22 @@ export class TrackService {
         extra: event.extra,
         duration: event.duration,
       })),
-    });
+    })
   }
 
   /**
    * 查询埋点统计
    */
-  async getStats(options: {
-    code?: string;
-    type?: string;
-    startDate?: Date;
-    endDate?: Date;
-  }) {
-    const { code, type, startDate, endDate } = options;
+  async getStats(options: { code?: string; type?: string; startDate?: Date; endDate?: Date }) {
+    const { code, type, startDate, endDate } = options
 
-    const where: any = {};
-    if (code) where.code = code;
-    if (type) where.type = type;
+    const where: any = {}
+    if (code) where.code = code
+    if (type) where.type = type
     if (startDate || endDate) {
-      where.createdAt = {};
-      if (startDate) where.createdAt.gte = startDate;
-      if (endDate) where.createdAt.lte = endDate;
+      where.createdAt = {}
+      if (startDate) where.createdAt.gte = startDate
+      if (endDate) where.createdAt.lte = endDate
     }
 
     const [total, byType, byCode] = await Promise.all([
@@ -117,7 +112,7 @@ export class TrackService {
         orderBy: { _count: { code: 'desc' } },
         take: 20,
       }),
-    ]);
+    ])
 
     return {
       total,
@@ -129,32 +124,32 @@ export class TrackService {
         code: item.code,
         count: item._count,
       })),
-    };
+    }
   }
 
   /**
    * 查询埋点列表
    */
   async findAll(options: {
-    page?: number;
-    pageSize?: number;
-    code?: string;
-    type?: string;
-    pagePath?: string;
-    startDate?: Date;
-    endDate?: Date;
+    page?: number
+    pageSize?: number
+    code?: string
+    type?: string
+    pagePath?: string
+    startDate?: Date
+    endDate?: Date
   }) {
-    const { page = 1, pageSize = 20, code, type, pagePath, startDate, endDate } = options;
-    const skip = (page - 1) * pageSize;
+    const { page = 1, pageSize = 20, code, type, pagePath, startDate, endDate } = options
+    const skip = (page - 1) * pageSize
 
-    const where: any = {};
-    if (code) where.code = { contains: code };
-    if (type) where.type = type;
-    if (pagePath) where.pagePath = { contains: pagePath };
+    const where: any = {}
+    if (code) where.code = { contains: code }
+    if (type) where.type = type
+    if (pagePath) where.pagePath = { contains: pagePath }
     if (startDate || endDate) {
-      where.createdAt = {};
-      if (startDate) where.createdAt.gte = startDate;
-      if (endDate) where.createdAt.lte = endDate;
+      where.createdAt = {}
+      if (startDate) where.createdAt.gte = startDate
+      if (endDate) where.createdAt.lte = endDate
     }
 
     const [events, total] = await Promise.all([
@@ -165,7 +160,7 @@ export class TrackService {
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.trackEvent.count({ where }),
-    ]);
+    ])
 
     return {
       data: events,
@@ -175,7 +170,6 @@ export class TrackService {
         pageSize,
         totalPages: Math.ceil(total / pageSize),
       },
-    };
+    }
   }
 }
-

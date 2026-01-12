@@ -7,30 +7,17 @@
           <h2 class="text-xl font-bold">Port Magazine</h2>
         </div>
         <nav class="mt-4">
-          <router-link
-            to="/dashboard"
-            class="block px-4 py-2 hover:bg-gray-100"
-          >
+          <RouterLink to="/dashboard" class="block px-4 py-2 hover:bg-gray-100">
             数据看板
-          </router-link>
-          <router-link
-            to="/posts"
-            class="block px-4 py-2 hover:bg-gray-100"
-          >
-            推文管理
-          </router-link>
-          <router-link
-            to="/ads"
-            class="block px-4 py-2 hover:bg-gray-100"
-          >
-            广告管理
-          </router-link>
+          </RouterLink>
+          <RouterLink to="/posts" class="block px-4 py-2 hover:bg-gray-100"> 推文管理 </RouterLink>
+          <RouterLink to="/ads" class="block px-4 py-2 hover:bg-gray-100"> 广告管理 </RouterLink>
         </nav>
       </aside>
 
       <!-- 主内容区 -->
       <main class="flex-1 p-8">
-        <router-view />
+        <RouterView />
       </main>
     </div>
   </div>

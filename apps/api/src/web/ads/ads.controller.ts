@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
-import { AdsService } from '@/shared/services/ads.service';
+import { Controller, Get, Post, Param } from '@nestjs/common'
+import { AdsService } from '@/shared/services/ads.service'
 
 @Controller('web/ads')
 export class AdsController {
@@ -11,7 +11,7 @@ export class AdsController {
    */
   @Get()
   async findActive() {
-    return this.adsService.findActive();
+    return this.adsService.findActive()
   }
 
   /**
@@ -20,7 +20,6 @@ export class AdsController {
    */
   @Post(':id/click')
   async recordClick(@Param('id') id: string) {
-    return this.adsService.recordClick(id);
+    return this.adsService.recordClick(id)
   }
 }
-

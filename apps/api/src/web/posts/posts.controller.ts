@@ -1,7 +1,7 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { PostsService } from '@/shared/services/posts.service';
-import { QueryPostDto } from './dto/query-post.dto';
-import { PaginationDto } from '@/common/dto/pagination.dto';
+import { Controller, Get, Param, Query } from '@nestjs/common'
+import { PostsService } from '@/shared/services/posts.service'
+import { QueryPostDto } from './dto/query-post.dto'
+import { PaginationDto } from '@/common/dto/pagination.dto'
 
 @Controller('web/posts')
 export class PostsController {
@@ -17,7 +17,7 @@ export class PostsController {
       page: query.page,
       pageSize: query.pageSize,
       category: query.category,
-    });
+    })
   }
 
   /**
@@ -26,15 +26,12 @@ export class PostsController {
    * 优先返回同分类文章，不足则按发布日期填充
    */
   @Get(':id/related')
-  async findRelated(
-    @Param('id') id: string,
-    @Query() query: PaginationDto,
-  ) {
+  async findRelated(@Param('id') id: string, @Query() query: PaginationDto) {
     return this.postsService.findRelated({
       postId: id,
       page: query.page,
       pageSize: query.pageSize || 6,
-    });
+    })
   }
 
   /**
@@ -43,7 +40,6 @@ export class PostsController {
    */
   @Get(':slug')
   async findOne(@Param('slug') slug: string) {
-    return this.postsService.findBySlug(slug);
+    return this.postsService.findBySlug(slug)
   }
 }
-
