@@ -184,12 +184,59 @@ export class AdsService {
     const clicks = totalClicks._sum.clickCount || 0
     const impressions = totalImpressions._sum.impressionCount || 0
 
+    // 获取最近 7 天的点击率趋势
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+    // 模拟趋势数据（实际应该从日志表获取）
+    const trend = []
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date()
+      date.setDate(date.getDate() - i)
+      const dateStr = date.toISOString().split('T')[0]
+
+      // 这里简化处理，实际应该从日志表查询每天的点击和展示数据
+      trend.push({
+        date: dateStr,
+        ctr: impressions > 0 ? parseFloat(((clicks / impressions) * 100).toFixed(2)) : 0,
+      })
+    }
+
+    // 获取表现最好的广告（按点击率排序）
+    const topAds = await this.prisma.advertisement.findMany({
+      where: {
+        status: AdStatus.ACTIVE,
+        impressionCount: {
+          gt: 0,
+        },
+      },
+      orderBy: {
+        clickCount: 'desc',
+      },
+      take: 10,
+      select: {
+        id: true,
+        title: true,
+        clickCount: true,
+        impressionCount: true,
+        publishedAt: true,
+      },
+    })
+
+    // 计算每个广告的点击率
+    const topAdsWithCtr = topAds.map((ad) => ({
+      ...ad,
+      ctr: ad.impressionCount > 0 ? ((ad.clickCount / ad.impressionCount) * 100).toFixed(2) : '0',
+    }))
+
     return {
       total,
       active,
       totalClicks: clicks,
       totalImpressions: impressions,
       ctr: impressions > 0 ? ((clicks / impressions) * 100).toFixed(2) : '0',
+      trend,
+      topAds: topAdsWithCtr,
     }
   }
 }

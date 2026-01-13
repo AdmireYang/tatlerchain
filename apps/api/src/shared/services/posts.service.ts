@@ -285,11 +285,64 @@ export class PostsService {
       }),
     ])
 
+    // 获取最近 7 天的发布趋势
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+    const trendData = await this.prisma.post.groupBy({
+      by: ['publishedAt'],
+      where: {
+        status: PostStatus.PUBLISHED,
+        publishedAt: {
+          gte: sevenDaysAgo,
+        },
+      },
+      _count: true,
+    })
+
+    // 格式化趋势数据
+    const trend = []
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date()
+      date.setDate(date.getDate() - i)
+      const dateStr = date.toISOString().split('T')[0]
+
+      const count = trendData.filter((item) => {
+        if (!item.publishedAt) return false
+        const itemDate = new Date(item.publishedAt).toISOString().split('T')[0]
+        return itemDate === dateStr
+      }).length
+
+      trend.push({
+        date: dateStr,
+        count,
+      })
+    }
+
+    // 获取最受欢迎的推文（按浏览量排序）
+    const topPosts = await this.prisma.post.findMany({
+      where: {
+        status: PostStatus.PUBLISHED,
+      },
+      orderBy: {
+        viewCount: 'desc',
+      },
+      take: 10,
+      select: {
+        id: true,
+        title: true,
+        viewCount: true,
+        publishedAt: true,
+      },
+    })
+
     return {
       total,
       published,
       draft,
       totalViews: totalViews._sum.viewCount || 0,
+      trend,
+      topPosts,
     }
   }
 
