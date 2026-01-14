@@ -163,10 +163,14 @@ setup_firewall() {
 setup_docker_mirror() {
     log_step "配置 Docker 镜像加速..."
     mkdir -p /etc/docker
+    
+    # 使用多个可用的镜像源
     cat > /etc/docker/daemon.json << 'EOF'
 {
   "registry-mirrors": [
-    "https://registry.cn-hangzhou.aliyuncs.com"
+    "https://dockerproxy.com",
+    "https://docker.nju.edu.cn",
+    "https://docker.m.daocloud.io"
   ],
   "max-concurrent-downloads": 10,
   "log-driver": "json-file",
@@ -178,7 +182,14 @@ setup_docker_mirror() {
 EOF
     systemctl daemon-reload
     systemctl restart docker
-    log_info "Docker 镜像加速配置完成 ✓"
+    
+    # 测试拉取
+    log_info "测试镜像拉取..."
+    if docker pull node:20-alpine; then
+        log_info "Docker 镜像加速配置成功 ✓"
+    else
+        log_warn "镜像加速可能未生效，尝试直接拉取..."
+    fi
 }
 
 # ============================================
@@ -522,9 +533,13 @@ update_deploy() {
     log_info "开始更新部署..."
     cd $APP_DIR
 
+    # 检查并配置 Docker 镜像加速
+    setup_docker_mirror
+
     # 拉取最新代码
     log_step "拉取最新代码..."
-    git pull origin main
+    git fetch origin
+    git reset --hard origin/main
 
     # 重新构建并启动
     build_and_start

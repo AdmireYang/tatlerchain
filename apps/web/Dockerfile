@@ -1,15 +1,22 @@
 # apps/web/Dockerfile
-# 使用阿里云镜像源
-FROM registry.cn-hangzhou.aliyuncs.com/library/node:20-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# 安装 pnpm
-RUN npm install -g pnpm
+# 配置 npm 镜像源（国内加速）
+RUN npm config set registry https://registry.npmmirror.com
+
+# 安装 pnpm 并配置镜像源
+RUN npm install -g pnpm && \
+    pnpm config set registry https://registry.npmmirror.com
 
 # 复制 workspace 配置
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY .env ./
+
+# 配置 pnpm 使用 hoisted 模式（Docker 中避免符号链接问题）
+RUN echo "shamefully-hoist=true" > .npmrc && \
+    echo "node-linker=hoisted" >> .npmrc
 
 # 复制各包的 package.json
 COPY packages/config/package.json ./packages/config/
@@ -17,8 +24,8 @@ COPY packages/types/package.json ./packages/types/
 COPY packages/utils/package.json ./packages/utils/
 COPY apps/web/package.json ./apps/web/
 
-# 安装依赖
-RUN pnpm install --frozen-lockfile
+# 安装依赖（不使用 frozen-lockfile，因为 Docker 中使用不同的 node-linker）
+RUN pnpm install
 
 # 复制源码
 COPY packages ./packages
@@ -30,9 +37,12 @@ RUN pnpm --filter @port/web build
 # =====================
 # 生产镜像
 # =====================
-FROM registry.cn-hangzhou.aliyuncs.com/library/node:20-alpine AS runner
+FROM node:20-alpine AS runner
 
 WORKDIR /app
+
+# 安装 wget（健康检查需要）
+RUN apk add --no-cache wget
 
 # 复制 Nuxt 构建产物
 COPY --from=builder /app/apps/web/.output ./.output

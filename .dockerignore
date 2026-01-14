@@ -1,0 +1,34 @@
+# 依赖目录
+node_modules
+**/node_modules
+
+# 构建产物
+dist
+**/dist
+.output
+**/.output
+.nuxt
+**/.nuxt
+
+# 开发文件
+*.log
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# 测试
+coverage
+**/*.test.ts
+**/*.spec.ts
+
+# 本地环境配置（使用 Docker 环境变量）
+.env.local
+

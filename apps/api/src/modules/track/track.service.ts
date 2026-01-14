@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from '@/database/prisma.service'
 import { TrackEventDto } from './dto/track-event.dto'
-import { TrackEventType as PrismaTrackEventType } from '@prisma/client'
+import { TrackEventType as PrismaTrackEventType } from '@port/database'
 
 @Injectable()
 export class TrackService {
