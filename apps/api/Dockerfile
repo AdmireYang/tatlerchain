@@ -1,5 +1,6 @@
 # apps/api/Dockerfile
-FROM node:20-alpine AS builder
+# 使用阿里云镜像源
+FROM registry.cn-hangzhou.aliyuncs.com/library/node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -33,7 +34,7 @@ RUN pnpm --filter @port/api build
 # =====================
 # 生产镜像
 # =====================
-FROM node:20-alpine AS runner
+FROM registry.cn-hangzhou.aliyuncs.com/library/node:20-alpine AS runner
 
 WORKDIR /app
 
