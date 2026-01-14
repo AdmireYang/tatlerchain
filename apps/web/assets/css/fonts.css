@@ -1,0 +1,33 @@
+/* 本地字体定义 - Playfair Display */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url('/fonts/PlayfairDisplay-Medium.woff2') format('woff2');
+}
+
+/* 600 和 700 使用 500 作为后备 */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('/fonts/PlayfairDisplay-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('/fonts/PlayfairDisplay-Medium.woff2') format('woff2');
+}

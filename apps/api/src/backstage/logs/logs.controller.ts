@@ -41,3 +41,4 @@ export class LogsController {
     return this.logService.getStats()
   }
 }
+

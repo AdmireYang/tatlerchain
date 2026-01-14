@@ -5,16 +5,18 @@ import { DatabaseModule } from '@/database/database.module'
 import { SharedModule } from '@/shared/shared.module'
 import { LogModule } from '@/common/log.module'
 import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor'
+import { HealthModule } from '@/modules/health/health.module'
 import { TrackModule } from '@/modules/track/track.module'
+import { VisitorModule } from '@/modules/visitor/visitor.module'
 import { WebModule } from '@/web/web.module'
 import { BackstageModule } from '@/backstage/backstage.module'
 
 @Module({
   imports: [
-    // 配置模块
+    // 配置模块 - 读取根目录和本地 .env 文件
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: ['.env.local', '.env', '../../.env.local', '../../.env'],
     }),
 
     // 数据库模块
@@ -26,8 +28,14 @@ import { BackstageModule } from '@/backstage/backstage.module'
     // 共享服务模块
     SharedModule,
 
+    // 健康检查模块 (/api/health)
+    HealthModule,
+
     // 公共模块 - 埋点 (/api/track/*)
     TrackModule,
+
+    // 公共模块 - 游客 (/api/visitor/*)
+    VisitorModule,
 
     // 前台应用模块 (/api/web/*)
     WebModule,

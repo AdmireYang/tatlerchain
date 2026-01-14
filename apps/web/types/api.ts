@@ -1,19 +1,3 @@
-import type { ApiClient } from '~/plugins/api'
-
-// 扩展 NuxtApp 类型
-declare module '#app' {
-  interface NuxtApp {
-    $api: ApiClient
-  }
-}
-
-// 扩展 Vue 类型
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $api: ApiClient
-  }
-}
-
 // API 响应基础类型
 export interface ApiResponse<T = unknown> {
   code: number
@@ -29,14 +13,39 @@ export interface PaginationParams {
 
 // 分页响应
 export interface PaginatedData<T> {
-  items: T[]
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
+  data: T[]
+  meta: {
+    total: number
+    page: number
+    pageSize: number
+    totalPages: number
+  }
 }
 
-// 推文类型
+// 推文列表项广告（精简字段）
+export interface PostListItemAd {
+  sortOrder: number
+  advertisement: {
+    id: string
+    title: string
+    category: string
+    imageUrl: string
+    linkUrl: string
+  }
+}
+
+// 推文列表项（精简字段，用于列表展示）
+export interface PostListItem {
+  id: string
+  title: string
+  slug: string
+  excerpt: string
+  category: string
+  coverImage: string
+  advertisements?: PostListItemAd[]
+}
+
+// 推文详情（完整字段）
 export interface Post {
   id: string
   title: string
@@ -104,4 +113,17 @@ export interface TrackEventParams {
   sessionId?: string
   extra?: Record<string, unknown>
   duration?: number
+}
+
+// 游客信息
+export interface VisitorInfo {
+  visitorId: string
+  userId?: string
+  user?: {
+    id: string
+    name: string
+    email: string
+  }
+  createdAt: string
+  lastActiveAt: string
 }

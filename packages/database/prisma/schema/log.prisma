@@ -1,0 +1,23 @@
+// 日志相关模型
+
+// API 日志表
+model ApiLog {
+  id           String   @id @default(uuid())
+  method       String
+  path         String
+  statusCode   Int
+  duration     Int
+  userId       String?
+  userEmail    String?
+  ip           String?
+  userAgent    String?
+  requestBody  Json?
+  errorMessage String?
+  createdAt    DateTime @default(now())
+
+  @@index([path])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("api_logs")
+}
+

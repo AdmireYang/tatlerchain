@@ -10,6 +10,7 @@ export class PostsService {
 
   /**
    * 获取已发布的推文列表（前台使用）
+   * 只返回列表展示必要的字段，不返回 content 等大字段
    */
   async findPublished(options: { page?: number; pageSize?: number; category?: string }) {
     const { page = 1, pageSize = 10, category } = options
@@ -26,9 +27,33 @@ export class PostsService {
         skip,
         take: pageSize,
         orderBy: { publishedAt: 'desc' },
-        include: {
-          author: {
-            select: { id: true, name: true },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          excerpt: true,
+          category: true,
+          coverImage: true,
+          // 返回有效的广告
+          advertisements: {
+            where: {
+              advertisement: {
+                status: 'ACTIVE',
+              },
+            },
+            select: {
+              sortOrder: true,
+              advertisement: {
+                select: {
+                  id: true,
+                  title: true,
+                  category: true,
+                  imageUrl: true,
+                  linkUrl: true,
+                },
+              },
+            },
+            orderBy: { sortOrder: 'asc' },
           },
         },
       }),
@@ -109,6 +134,22 @@ export class PostsService {
         include: {
           author: {
             select: { id: true, name: true },
+          },
+          // 后台需要展示关联的广告
+          advertisements: {
+            include: {
+              advertisement: {
+                select: {
+                  id: true,
+                  title: true,
+                  category: true,
+                  imageUrl: true,
+                  linkUrl: true,
+                  status: true,
+                },
+              },
+            },
+            orderBy: { sortOrder: 'asc' },
           },
         },
       }),
@@ -363,6 +404,15 @@ export class PostsService {
       throw new NotFoundException('推文不存在')
     }
 
+    // 相关文章只需要展示的基础字段
+    const relatedSelect = {
+      id: true,
+      title: true,
+      slug: true,
+      category: true,
+      coverImage: true,
+    }
+
     // 1. 先查找同分类的文章
     let sameCategoryPosts: any[] = []
     if (currentPost.category) {
@@ -373,11 +423,7 @@ export class PostsService {
           category: currentPost.category,
         },
         orderBy: { publishedAt: 'desc' },
-        include: {
-          author: {
-            select: { id: true, name: true },
-          },
-        },
+        select: relatedSelect,
       })
     }
 
@@ -399,11 +445,7 @@ export class PostsService {
         },
         orderBy: { publishedAt: 'desc' },
         take: fillCount,
-        include: {
-          author: {
-            select: { id: true, name: true },
-          },
-        },
+        select: relatedSelect,
       })
 
       allRelatedPosts = [...sameCategoryPosts, ...fillPosts]

@@ -1,0 +1,32 @@
+// 推文相关模型
+
+// 推文表
+model Post {
+  id             String              @id @default(uuid())
+  title          String              @db.VarChar(50)
+  slug           String              @unique
+  content        Json
+  excerpt        String
+  category       String
+  coverImage     String
+  detailImage    Json?
+  status         PostStatus          @default(DRAFT)
+  publishedAt    DateTime?
+  authorId       String
+  author         User                @relation(fields: [authorId], references: [id])
+  viewCount      Int                 @default(0)
+  advertisements PostAdvertisement[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([category])
+  @@map("posts")
+}
+
+// 推文状态
+enum PostStatus {
+  DRAFT     // 草稿
+  PUBLISHED // 发布
+  ARCHIVED  // 归档
+}
+

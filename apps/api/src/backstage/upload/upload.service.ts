@@ -45,7 +45,7 @@ export class UploadService {
     fs.writeFileSync(filepath, file.buffer)
 
     // 返回文件访问 URL
-    const baseUrl = this.configService.get<string>('BASE_URL') || 'http://localhost:3001'
+    const baseUrl = this.configService.get<string>('API_BASE_URL') || 'http://localhost:3001'
 
     return {
       filename,

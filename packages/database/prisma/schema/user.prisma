@@ -1,0 +1,39 @@
+// 用户相关模型
+
+// 用户表
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  name      String
+  role      Role      @default(EDITOR)
+  posts     Post[]
+  visitors  Visitor[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("users")
+}
+
+// 用户角色
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+// 游客表
+model Visitor {
+  id           String   @id @default(uuid())
+  visitorId    String   @unique
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  ip           String?
+  userAgent    String?
+  lastActiveAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([lastActiveAt])
+  @@map("visitors")
+}
+

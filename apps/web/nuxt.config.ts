@@ -1,10 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { ports, apiConfig } from '@port/config'
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  modules: ['@nuxtjs/tailwindcss', '@element-plus/nuxt', '@pinia/nuxt'],
+  modules: ['@nuxtjs/tailwindcss', '@element-plus/nuxt'],
 
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/fonts.css', '~/assets/css/main.css'],
 
   // Vite 配置 - SCSS 变量自动导入
   vite: {
@@ -37,19 +39,20 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Port Magazine - 内容管理系统' },
       ],
       link: [
-        // 引入 Playfair Display 字体（用于标题）
+        // 预加载本地字体文件（减少闪烁）
         {
-          rel: 'preconnect',
-          href: 'https://fonts.googleapis.com',
-        },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.gstatic.com',
+          rel: 'preload',
+          href: '/fonts/PlayfairDisplay-Regular.woff2',
+          as: 'font',
+          type: 'font/woff2',
           crossorigin: '',
         },
         {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap',
+          rel: 'preload',
+          href: '/fonts/PlayfairDisplay-Medium.woff2',
+          as: 'font',
+          type: 'font/woff2',
+          crossorigin: '',
         },
       ],
     },
@@ -57,9 +60,24 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:3001',
+      apiBase: apiConfig.baseUrl,
+    },
+  },
+
+  // 开发环境代理配置
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: apiConfig.baseUrl,
+        changeOrigin: true,
+      },
     },
   },
 
   compatibilityDate: '2024-01-01',
+
+  // 开发服务器端口
+  devServer: {
+    port: ports.web,
+  },
 })

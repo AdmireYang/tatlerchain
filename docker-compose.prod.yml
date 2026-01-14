@@ -1,0 +1,97 @@
+# docker-compose.prod.yml - 生产环境配置
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: tatlerchain-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-tatlerchain}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-tatlerchain}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-tatlerchain}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # 内存限制（2G 服务器优化）
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # NestJS API 服务
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: tatlerchain-api
+    restart: always
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${DB_USER:-tatlerchain}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-tatlerchain}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      API_BASE_URL: ${API_BASE_URL}
+      UPLOAD_DIR: /app/uploads
+    ports:
+      - '3001:3001'
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3001/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  # Nuxt Web 服务
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: tatlerchain-web
+    restart: always
+    environment:
+      NODE_ENV: production
+      NUXT_PUBLIC_API_BASE: ${API_BASE_URL}
+    ports:
+      - '3003:3003'
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3003']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,125 +1,116 @@
 <template>
-  <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
-    <div class="flex items-center justify-between h-16 px-6 md:px-10">
-      <!-- 左侧：菜单按钮 -->
-      <button
-        class="flex flex-col justify-center items-center w-8 h-8 gap-1.5 hover:opacity-70 transition-opacity"
-        @click="toggleMenu"
-        aria-label="菜单"
-      >
-        <span
-          class="w-6 h-0.5 bg-dark transition-transform"
-          :class="{ 'rotate-45 translate-y-2': isMenuOpen }"
-        ></span>
-        <span
-          class="w-6 h-0.5 bg-dark transition-opacity"
-          :class="{ 'opacity-0': isMenuOpen }"
-        ></span>
-        <span
-          class="w-6 h-0.5 bg-dark transition-transform"
-          :class="{ '-rotate-45 -translate-y-2': isMenuOpen }"
-        ></span>
-      </button>
-
+  <header class="app-header" :class="{ scrolled: isScrolled }">
+    <div class="header-inner">
       <!-- 中间：Logo -->
-      <NuxtLink to="/" class="absolute left-1/2 -translate-x-1/2">
-        <h1 class="font-display text-3xl md:text-4xl font-medium tracking-wide text-dark">PORT</h1>
+      <NuxtLink to="/" class="logo-link">
+        <h1 class="logo-text">PORT</h1>
       </NuxtLink>
-
-      <!-- 右侧：订阅按钮 -->
-      <div class="flex items-center gap-4">
-        <a
-          href="#subscribe"
-          class="hidden md:flex items-center gap-2 text-primary text-sm font-medium hover:opacity-70 transition-opacity"
-        >
-          GET PORT IN PRINT
-        </a>
-        <button
-          class="w-8 h-8 flex items-center justify-center hover:opacity-70 transition-opacity"
-          aria-label="邮件订阅"
-        >
-          <ElIcon :size="20">
-            <Message />
-          </ElIcon>
-        </button>
-      </div>
     </div>
-
-    <!-- 移动端菜单 -->
-    <Transition name="slide-down">
-      <nav
-        v-if="isMenuOpen"
-        class="absolute top-16 left-0 right-0 bg-white border-b border-gray-100 shadow-lg"
-      >
-        <div class="flex flex-col py-4 px-6">
-          <NuxtLink
-            v-for="item in menuItems"
-            :key="item.path"
-            :to="item.path"
-            class="py-3 text-dark hover:text-primary transition-colors border-b border-gray-50 last:border-0"
-            @click="isMenuOpen = false"
-          >
-            {{ item.label }}
-          </NuxtLink>
-          <a
-            href="#subscribe"
-            class="py-3 text-primary font-medium md:hidden"
-            @click="isMenuOpen = false"
-          >
-            GET PORT IN PRINT
-          </a>
-        </div>
-      </nav>
-    </Transition>
   </header>
 
   <!-- 占位，防止内容被 fixed header 遮挡 -->
-  <div class="h-16"></div>
+  <div class="header-spacer" />
 </template>
 
 <script setup lang="ts">
-import { Message } from '@element-plus/icons-vue'
+const isScrolled = ref(false)
+const hasAnimated = ref(false)
 
-const isMenuOpen = ref(false)
+function handleScroll() {
+  const currentScrollY = window.scrollY
 
-const menuItems = [
-  { label: 'HOME', path: '/' },
-  { label: 'FASHION', path: '/category/fashion' },
-  { label: 'MUSIC', path: '/category/music' },
-  { label: 'ART', path: '/category/art' },
-  { label: 'FILM', path: '/category/film' },
-]
+  // 滚动超过阈值时触发动画
+  if (currentScrollY > 50 && !hasAnimated.value) {
+    hasAnimated.value = true
+    isScrolled.value = true
+  }
 
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value
+  // 回到顶部时重置
+  if (currentScrollY < 10) {
+    hasAnimated.value = false
+    isScrolled.value = false
+  }
 }
 
-// 点击外部关闭菜单
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  handleScroll()
 })
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener('scroll', handleScroll)
 })
-
-const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as HTMLElement
-  if (!target.closest('header')) {
-    isMenuOpen.value = false
-  }
-}
 </script>
 
-<style scoped>
-.slide-down-enter-active,
-.slide-down-leave-active {
-  transition: all 0.3s ease;
+<style lang="scss" scoped>
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+
+  // 滚动后的状态 - 从上往下滑入
+  &.scrolled {
+    animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(12px);
+  }
 }
 
-.slide-down-enter-from,
-.slide-down-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  padding: 0 24px;
+
+  @media (min-width: 768px) {
+    height: 88px;
+    padding: 0 40px;
+  }
+}
+
+.logo-link {
+  text-decoration: none;
+}
+
+.logo-text {
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: #1a1a1a;
+  margin: 0;
+  transition: opacity 0.3s ease;
+
+  @media (min-width: 768px) {
+    font-size: 42px;
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.header-spacer {
+  height: 80px;
+
+  @media (min-width: 768px) {
+    height: 88px;
+  }
 }
 </style>

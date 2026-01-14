@@ -1,0 +1,40 @@
+// 广告相关模型
+
+// 广告表
+model Advertisement {
+  id              String              @id @default(uuid())
+  title           String              @db.VarChar(50)
+  category        String
+  imageUrl        String
+  linkUrl         String
+  clickCount      Int                 @default(0)
+  impressionCount Int                 @default(0)
+  status          AdStatus            @default(ACTIVE)
+  publishedAt     DateTime?
+  posts           PostAdvertisement[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([category])
+  @@index([publishedAt])
+  @@map("advertisements")
+}
+
+// 推文广告关联表
+model PostAdvertisement {
+  postId          String
+  advertisementId String
+  sortOrder       Int           @default(0)
+  post            Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+
+  @@id([postId, advertisementId])
+  @@map("post_advertisements")
+}
+
+// 广告状态
+enum AdStatus {
+  ACTIVE
+  INACTIVE
+}
+

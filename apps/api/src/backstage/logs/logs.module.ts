@@ -7,3 +7,4 @@ import { LogModule } from '@/common/log.module'
   controllers: [LogsController],
 })
 export class LogsModule {}
+

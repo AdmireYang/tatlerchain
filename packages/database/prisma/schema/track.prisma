@@ -1,0 +1,48 @@
+// 埋点相关模型
+
+// 埋点事件表
+model TrackEvent {
+  id             String         @id @default(uuid())
+  code           String
+  type           TrackEventType
+  pagePath       String
+  pageTitle      String?
+  referrer       String?
+
+  // 设备信息
+  deviceId       String?
+  deviceType     String?
+  os             String?
+  osVersion      String?
+  browser        String?
+  browserVersion String?
+  screenWidth    Int?
+  screenHeight   Int?
+
+  // 用户信息
+  userId         String?
+  sessionId      String?
+  ip             String?
+
+  // 扩展数据
+  extra          Json?
+  duration       Int?
+
+  createdAt      DateTime @default(now())
+
+  @@index([code])
+  @@index([type])
+  @@index([pagePath])
+  @@index([userId])
+  @@index([deviceId])
+  @@index([createdAt])
+  @@map("track_events")
+}
+
+// 埋点事件类型
+enum TrackEventType {
+  EXPOSURE // 曝光
+  LEAVE    // 离开
+  CLICK    // 点击
+}
+

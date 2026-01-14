@@ -17,6 +17,7 @@
     "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^10.3.0",
     "@nestjs/swagger": "^7.4.2",
+    "@port/config": "workspace:*",
     "@port/database": "workspace:*",
     "@port/types": "workspace:*",
     "bcryptjs": "^2.4.3",

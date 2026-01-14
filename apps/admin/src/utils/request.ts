@@ -33,9 +33,9 @@ function hideLoading() {
   }
 }
 
-// 创建 axios 实例
+// 创建 axios 实例（在运行时通过代理访问 /api）
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001',
+  baseURL: '/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
