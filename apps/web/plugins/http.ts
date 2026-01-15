@@ -22,7 +22,11 @@ interface ApiResponse<T = unknown> {
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
-  const baseURL = `${config.public.apiBase}/api`
+  // SSR 时使用内部地址，客户端使用公网地址
+  const apiBase = import.meta.server
+    ? (config.apiBaseServer || config.public.apiBase)
+    : config.public.apiBase
+  const baseURL = `${apiBase}/api`
 
   const http = $fetch.create({
     baseURL,

@@ -65,12 +65,16 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
+        # 构建时用于客户端的公网地址
         API_BASE_URL: ${API_BASE_URL}
     container_name: tatlerchain-web
     restart: always
     environment:
       NODE_ENV: production
+      # 客户端（浏览器）使用公网地址
       NUXT_PUBLIC_API_BASE: ${API_BASE_URL}
+      # 服务端（SSR）使用 Docker 内部网络地址
+      NUXT_API_BASE_SERVER: http://api:3001
     ports:
       - '3003:3003'
     depends_on:
