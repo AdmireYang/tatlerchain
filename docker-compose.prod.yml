@@ -5,6 +5,8 @@ services:
     image: postgres:15-alpine
     container_name: tatlerchain-postgres
     restart: always
+    ports:
+      - '127.0.0.1:5432:5432' # 仅本地访问，供 SSH 隧道连接
     environment:
       POSTGRES_USER: ${DB_USER:-tatlerchain}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
