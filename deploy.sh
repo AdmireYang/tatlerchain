@@ -544,11 +544,11 @@ update_deploy() {
     # 重新构建并启动
     build_and_start
 
-    # 构建 Admin
-    build_admin
+    # 构建 Admin（暂时跳过）
+    # build_admin
 
     # 重启 Nginx
-    systemctl reload nginx
+    systemctl reload nginx 2>/dev/null || true
 
     # 健康检查
     health_check
@@ -600,8 +600,8 @@ init_deploy() {
     # 构建并启动
     build_and_start
 
-    # 构建 Admin
-    build_admin
+    # 构建 Admin（暂时跳过）
+    # build_admin
 
     # 健康检查
     health_check
