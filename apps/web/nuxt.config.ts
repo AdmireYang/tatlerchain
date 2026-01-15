@@ -60,7 +60,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: apiConfig.baseUrl,
+      // 本地开发使用 localhost，生产环境通过 NUXT_PUBLIC_API_BASE 覆盖
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || apiConfig.baseUrl,
     },
   },
 

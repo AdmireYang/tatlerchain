@@ -37,8 +37,7 @@ RUN cd packages/database && npx prisma generate
 COPY packages ./packages
 COPY apps/api ./apps/api
 
-# 复制环境变量（如果存在）
-COPY .env* ./
+# 注意：不复制 .env 文件，生产环境通过 docker-compose 传入环境变量
 
 # 构建 API（Webpack 会打包除 Prisma 外的所有依赖）
 RUN pnpm --filter @port/api build
