@@ -13,9 +13,11 @@ RUN npm install -g pnpm && \
 # 复制 workspace 配置
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# 构建时设置默认 API 地址（会被运行时 NUXT_PUBLIC_API_BASE 覆盖）
+# 构建参数：API 地址
 ARG API_BASE_URL=http://localhost:3001
-ENV API_BASE_URL=${API_BASE_URL}
+
+# 创建 .env 文件供构建时使用
+RUN echo "API_BASE_URL=${API_BASE_URL}" > .env
 
 # 配置 pnpm 使用 hoisted 模式（Docker 中避免符号链接问题）
 RUN echo "shamefully-hoist=true" > .npmrc && \
