@@ -4,7 +4,6 @@
  */
 
 import { ElMessageBox } from 'element-plus'
-import type { ElMessageBoxOptions } from 'element-plus'
 
 /**
  * 确认对话框配置

@@ -10,7 +10,7 @@ import { ElMessage } from 'element-plus'
  * 全局错误捕获
  * 捕获所有未处理的组件错误
  */
-onErrorCaptured((err, instance, info) => {
+onErrorCaptured((err, _instance, info) => {
   console.error('全局错误捕获:', err, info)
 
   // 显示友好的错误提示

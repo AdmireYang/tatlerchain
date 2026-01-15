@@ -88,7 +88,7 @@
 
           <!-- 广告列表 -->
           <div v-if="selectedAds.length > 0" class="ad-list">
-            <draggable
+            <Draggable
               v-model="selectedAds"
               item-key="id"
               handle=".drag-handle"
@@ -118,7 +118,7 @@
                   </ElButton>
                 </div>
               </template>
-            </draggable>
+            </Draggable>
           </div>
 
           <!-- 空状态 -->
@@ -145,7 +145,7 @@ import type { CreatePostDto, Advertisement } from '@/types/api'
 import RichTextEditor from '@/components/common/RichTextEditor.vue'
 import ImageUpload from '@/components/common/ImageUpload.vue'
 import AdSelector from './AdSelector.vue'
-import draggable from 'vuedraggable'
+import Draggable from 'vuedraggable'
 import { getAdById } from '@/api/ad'
 
 // Props

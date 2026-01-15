@@ -1,17 +1,17 @@
 <template>
-  <el-card class="stat-card" :body-style="{ padding: '20px' }">
+  <ElCard class="stat-card" :body-style="{ padding: '20px' }">
     <div class="stat-card-content">
       <div class="stat-icon" :style="{ backgroundColor: color + '20', color: color }">
-        <el-icon :size="32">
+        <ElIcon :size="32">
           <component :is="icon" />
-        </el-icon>
+        </ElIcon>
       </div>
       <div class="stat-info">
         <div class="stat-title">{{ title }}</div>
         <div class="stat-value">{{ formattedValue }}</div>
       </div>
     </div>
-  </el-card>
+  </ElCard>
 </template>
 
 <script setup lang="ts">

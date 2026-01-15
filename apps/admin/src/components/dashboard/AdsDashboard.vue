@@ -1,52 +1,52 @@
 <template>
   <div class="ads-dashboard">
     <!-- 统计卡片 -->
-    <el-row :gutter="16" class="mb-4">
-      <el-col :xs="24" :sm="12" :md="6">
+    <ElRow :gutter="16" class="mb-4">
+      <ElCol :xs="24" :sm="12" :md="6">
         <StatCard
           title="广告总数"
           :value="stats?.total || 0"
           :icon="PictureFilled"
           color="#409eff"
         />
-      </el-col>
-      <el-col :xs="24" :sm="12" :md="6">
+      </ElCol>
+      <ElCol :xs="24" :sm="12" :md="6">
         <StatCard title="活跃广告" :value="stats?.active || 0" :icon="Check" color="#67c23a" />
-      </el-col>
-      <el-col :xs="24" :sm="12" :md="6">
+      </ElCol>
+      <ElCol :xs="24" :sm="12" :md="6">
         <StatCard
           title="总点击次数"
           :value="stats?.totalClicks || 0"
           :icon="Mouse"
           color="#e6a23c"
         />
-      </el-col>
-      <el-col :xs="24" :sm="12" :md="6">
+      </ElCol>
+      <ElCol :xs="24" :sm="12" :md="6">
         <StatCard
           title="总展示次数"
           :value="stats?.totalImpressions || 0"
           :icon="View"
           color="#f56c6c"
         />
-      </el-col>
-    </el-row>
+      </ElCol>
+    </ElRow>
 
     <!-- 点击率卡片 -->
-    <el-row :gutter="16" class="mb-4">
-      <el-col :span="24">
-        <el-card>
+    <ElRow :gutter="16" class="mb-4">
+      <ElCol :span="24">
+        <ElCard>
           <div class="ctr-display">
             <div class="ctr-label">平均点击率 (CTR)</div>
             <div class="ctr-value">{{ stats?.ctr || '0' }}%</div>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        </ElCard>
+      </ElCol>
+    </ElRow>
 
     <!-- 趋势图表 -->
-    <el-row :gutter="16" class="mb-4">
-      <el-col :span="24">
-        <el-card>
+    <ElRow :gutter="16" class="mb-4">
+      <ElCol :span="24">
+        <ElCard>
           <template #header>
             <div class="card-header">
               <span>广告点击率趋势（最近 7 天）</span>
@@ -59,48 +59,48 @@
             color="#67c23a"
             height="300px"
           />
-          <el-empty v-else description="暂无数据" />
-        </el-card>
-      </el-col>
-    </el-row>
+          <ElEmpty v-else description="暂无数据" />
+        </ElCard>
+      </ElCol>
+    </ElRow>
 
     <!-- 表现最好的广告 -->
-    <el-row :gutter="16">
-      <el-col :span="24">
-        <el-card>
+    <ElRow :gutter="16">
+      <ElCol :span="24">
+        <ElCard>
           <template #header>
             <div class="card-header">
               <span>表现最好的广告（Top 10）</span>
             </div>
           </template>
-          <el-table v-if="stats?.topAds && stats.topAds.length > 0" :data="stats.topAds" stripe>
-            <el-table-column type="index" label="排名" width="80" />
-            <el-table-column prop="title" label="标题" min-width="200" />
-            <el-table-column prop="clickCount" label="点击次数" width="120" align="right">
+          <ElTable v-if="stats?.topAds && stats.topAds.length > 0" :data="stats.topAds" stripe>
+            <ElTableColumn type="index" label="排名" width="80" />
+            <ElTableColumn prop="title" label="标题" min-width="200" />
+            <ElTableColumn prop="clickCount" label="点击次数" width="120" align="right">
               <template #default="{ row }">
                 {{ row.clickCount.toLocaleString() }}
               </template>
-            </el-table-column>
-            <el-table-column prop="impressionCount" label="展示次数" width="120" align="right">
+            </ElTableColumn>
+            <ElTableColumn prop="impressionCount" label="展示次数" width="120" align="right">
               <template #default="{ row }">
                 {{ row.impressionCount.toLocaleString() }}
               </template>
-            </el-table-column>
-            <el-table-column prop="ctr" label="点击率" width="100" align="right">
+            </ElTableColumn>
+            <ElTableColumn prop="ctr" label="点击率" width="100" align="right">
               <template #default="{ row }">
-                <el-tag type="success">{{ row.ctr }}%</el-tag>
+                <ElTag type="success">{{ row.ctr }}%</ElTag>
               </template>
-            </el-table-column>
-            <el-table-column prop="publishedAt" label="发布时间" width="180">
+            </ElTableColumn>
+            <ElTableColumn prop="publishedAt" label="发布时间" width="180">
               <template #default="{ row }">
                 {{ formatDate(row.publishedAt) }}
               </template>
-            </el-table-column>
-          </el-table>
-          <el-empty v-else description="暂无数据" />
-        </el-card>
-      </el-col>
-    </el-row>
+            </ElTableColumn>
+          </ElTable>
+          <ElEmpty v-else description="暂无数据" />
+        </ElCard>
+      </ElCol>
+    </ElRow>
   </div>
 </template>
 

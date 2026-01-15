@@ -142,7 +142,7 @@ async function handleDelete(id: string) {
     await adStore.remove(id)
     ElMessage.success('删除成功')
     fetchData()
-  } catch (error) {
+  } catch {
     ElMessage.error('删除失败')
   }
 }

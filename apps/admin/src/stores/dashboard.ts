@@ -3,7 +3,7 @@
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { PostStats, AdStats, DashboardOverview } from '@/api/dashboard'
+import type { PostStats, AdStats } from '@/api/dashboard'
 import { getDashboardOverview, getPostsStats, getAdsStats } from '@/api/dashboard'
 
 export const useDashboardStore = defineStore('dashboard', () => {
@@ -20,12 +20,11 @@ export const useDashboardStore = defineStore('dashboard', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await getDashboardOverview()
-      postsStats.value = data.posts
-      adsStats.value = data.ads
-    } catch (err: any) {
-      error.value = err.message || '获取统计数据失败'
-      throw err
+      const response = await getDashboardOverview()
+      postsStats.value = response.data.posts
+      adsStats.value = response.data.ads
+    } catch {
+      throw new Error('获取统计数据失败')
     } finally {
       loading.value = false
     }
@@ -38,11 +37,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await getPostsStats()
-      postsStats.value = data
-    } catch (err: any) {
-      error.value = err.message || '获取推文统计数据失败'
-      throw err
+      const response = await getPostsStats()
+      postsStats.value = response.data
+    } catch {
+      throw new Error('获取推文统计数据失败')
     } finally {
       loading.value = false
     }
@@ -55,11 +53,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await getAdsStats()
-      adsStats.value = data
-    } catch (err: any) {
-      error.value = err.message || '获取广告统计数据失败'
-      throw err
+      const response = await getAdsStats()
+      adsStats.value = response.data
+    } catch {
+      throw new Error('获取广告统计数据失败')
     } finally {
       loading.value = false
     }

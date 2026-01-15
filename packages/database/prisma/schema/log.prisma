@@ -21,3 +21,4 @@ model ApiLog {
   @@map("api_logs")
 }
 
+

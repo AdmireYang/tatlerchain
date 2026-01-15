@@ -121,7 +121,7 @@ async function handlePublish(id: string) {
     await postStore.publish(id)
     ElMessage.success('发布成功')
     fetchData()
-  } catch (error) {
+  } catch {
     ElMessage.error('发布失败')
   }
 }
@@ -135,7 +135,7 @@ async function handleDelete(id: string) {
     await postStore.remove(id)
     ElMessage.success('删除成功')
     fetchData()
-  } catch (error) {
+  } catch {
     ElMessage.error('删除失败')
   }
 }

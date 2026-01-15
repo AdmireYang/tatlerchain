@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <ElDialog
     v-model="dialogVisible"
     title="选择广告"
     width="800px"
@@ -8,47 +8,47 @@
   >
     <!-- 搜索栏 -->
     <div class="search-bar">
-      <el-input v-model="searchKeyword" placeholder="搜索广告标题" clearable @input="handleSearch">
+      <ElInput v-model="searchKeyword" placeholder="搜索广告标题" clearable @input="handleSearch">
         <template #prefix>
-          <el-icon><Search /></el-icon>
+          <ElIcon><Search /></ElIcon>
         </template>
-      </el-input>
+      </ElInput>
     </div>
 
     <!-- 广告列表 -->
     <div v-loading="loading" class="ad-list">
-      <el-checkbox-group v-model="selectedAdIds">
+      <ElCheckboxGroup v-model="selectedAdIds">
         <div v-for="ad in ads" :key="ad.id" class="ad-item">
-          <el-checkbox :value="ad.id" :label="ad.id">
+          <ElCheckbox :value="ad.id" :label="ad.id">
             <div class="ad-content">
-              <el-image :src="ad.imageUrl" fit="cover" class="ad-image">
+              <ElImage :src="ad.imageUrl" fit="cover" class="ad-image">
                 <template #error>
                   <div class="image-error">
-                    <el-icon><Picture /></el-icon>
+                    <ElIcon><Picture /></ElIcon>
                   </div>
                 </template>
-              </el-image>
+              </ElImage>
               <div class="ad-info">
                 <div class="ad-title">{{ ad.title }}</div>
                 <div class="ad-meta">
-                  <el-tag size="small" type="info">{{ ad.category }}</el-tag>
-                  <el-tag size="small" :type="ad.status === 'ACTIVE' ? 'success' : 'info'">
+                  <ElTag size="small" type="info">{{ ad.category }}</ElTag>
+                  <ElTag size="small" :type="ad.status === 'ACTIVE' ? 'success' : 'info'">
                     {{ ad.status === 'ACTIVE' ? '已发布' : '未发布' }}
-                  </el-tag>
+                  </ElTag>
                 </div>
               </div>
             </div>
-          </el-checkbox>
+          </ElCheckbox>
         </div>
-      </el-checkbox-group>
+      </ElCheckboxGroup>
 
       <!-- 空状态 -->
-      <el-empty v-if="!loading && ads.length === 0" description="暂无广告" />
+      <ElEmpty v-if="!loading && ads.length === 0" description="暂无广告" />
     </div>
 
     <!-- 分页 -->
     <div v-if="total > pageSize" class="pagination">
-      <el-pagination
+      <ElPagination
         v-model:current-page="page"
         v-model:page-size="pageSize"
         :total="total"
@@ -60,13 +60,13 @@
     <!-- 底部按钮 -->
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="handleConfirm">
+        <ElButton @click="handleClose">取消</ElButton>
+        <ElButton type="primary" @click="handleConfirm">
           确定 (已选 {{ selectedAdIds.length }} 个)
-        </el-button>
+        </ElButton>
       </div>
     </template>
-  </el-dialog>
+  </ElDialog>
 </template>
 
 <script setup lang="ts">
@@ -84,8 +84,8 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'update:visible', value: boolean): void
-  (e: 'confirm', selectedIds: string[]): void
+  'update:visible': [value: boolean]
+  confirm: [selectedIds: string[]]
 }
 
 const props = withDefaults(defineProps<Props>(), {

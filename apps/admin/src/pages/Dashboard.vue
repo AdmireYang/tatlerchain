@@ -2,14 +2,14 @@
   <div class="dashboard-page">
     <h1 class="text-2xl font-bold mb-4">数据看板</h1>
 
-    <el-tabs v-model="activeTab" @tab-change="handleTabChange">
-      <el-tab-pane label="推文看板" name="posts">
+    <ElTabs v-model="activeTab" @tab-change="handleTabChange">
+      <ElTabPane label="推文看板" name="posts">
         <PostsDashboard :stats="dashboardStore.postsStats" />
-      </el-tab-pane>
-      <el-tab-pane label="广告看板" name="ads">
+      </ElTabPane>
+      <ElTabPane label="广告看板" name="ads">
         <AdsDashboard :stats="dashboardStore.adsStats" />
-      </el-tab-pane>
-    </el-tabs>
+      </ElTabPane>
+    </ElTabs>
   </div>
 </template>
 
