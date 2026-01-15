@@ -186,12 +186,40 @@ const detailImageLink = ref(props.modelValue.detailImage?.authorLink || '')
 const adSelectorVisible = ref(false)
 const selectedAds = ref<Advertisement[]>([])
 
-// 监听 props.modelValue 的变化，初始化广告列表
+// 防止递归更新的标志
+const isUpdatingFromProps = ref(false)
+
+// 监听 props.modelValue 的变化，更新表单数据
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue && !isUpdatingFromProps.value) {
+      isUpdatingFromProps.value = true
+
+      Object.assign(formData, newValue)
+
+      // 更新详情首图相关字段
+      detailImageUrl.value = newValue.detailImage?.url || ''
+      detailImageAuthor.value = newValue.detailImage?.authorName || ''
+      detailImageLink.value = newValue.detailImage?.authorLink || ''
+
+      // 使用 nextTick 确保所有更新完成后再重置标志
+      setTimeout(() => {
+        isUpdatingFromProps.value = false
+      }, 0)
+    }
+  },
+  { deep: true }
+)
+
+// 监听 props.modelValue.advertisementIds 的变化，初始化广告列表
 watch(
   () => props.modelValue.advertisementIds,
   (newIds) => {
-    if (newIds && newIds.length > 0) {
-      loadAdvertisements(newIds)
+    // 过滤掉无效的 ID
+    const validIds = newIds?.filter((id) => id && id !== 'undefined') || []
+    if (validIds.length > 0) {
+      loadAdvertisements(validIds)
     } else {
       selectedAds.value = []
     }
@@ -215,6 +243,9 @@ const rules: FormRules = {
 watch(
   () => formData,
   () => {
+    // 如果正在从 props 更新，不要 emit
+    if (isUpdatingFromProps.value) return
+
     const data = { ...formData }
 
     // 处理详情首图
@@ -235,6 +266,9 @@ watch(
 
 // 监听详情首图相关字段变化
 watch([detailImageUrl, detailImageAuthor, detailImageLink], () => {
+  // 如果正在从 props 更新，不要修改 formData
+  if (isUpdatingFromProps.value) return
+
   if (detailImageUrl.value) {
     formData.detailImage = {
       url: detailImageUrl.value,
@@ -259,8 +293,15 @@ watch(
  * 加载广告详情
  */
 async function loadAdvertisements(adIds: string[]) {
+  // 过滤掉无效的 ID
+  const validIds = adIds.filter((id) => id && id !== 'undefined')
+  if (validIds.length === 0) {
+    selectedAds.value = []
+    return
+  }
+
   try {
-    const promises = adIds.map((id) => getAdById(id))
+    const promises = validIds.map((id) => getAdById(id))
     const responses = await Promise.all(promises)
     selectedAds.value = responses.map((res) => res.data.data)
   } catch (error) {

@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick, onActivated } from 'vue'
 import * as echarts from 'echarts'
 import type { EChartsOption } from 'echarts'
 
@@ -127,10 +127,22 @@ const resizeChart = () => {
   chartInstance?.resize()
 }
 
+// 暴露 resize 方法供父组件调用
+defineExpose({
+  resize: resizeChart,
+})
+
 onMounted(() => {
   nextTick(() => {
     initChart()
     window.addEventListener('resize', resizeChart)
+  })
+})
+
+onActivated(() => {
+  // 当组件被激活时（如标签页切换），重新调整尺寸
+  nextTick(() => {
+    resizeChart()
   })
 })
 

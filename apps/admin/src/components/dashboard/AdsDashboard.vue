@@ -46,20 +46,22 @@
     <!-- 趋势图表 -->
     <ElRow :gutter="16" class="mb-4">
       <ElCol :span="24">
-        <ElCard>
+        <ElCard shadow="never">
           <template #header>
             <div class="card-header">
               <span>广告点击率趋势（最近 7 天）</span>
             </div>
           </template>
-          <TrendChart
-            v-if="trendData"
-            :data="trendData"
-            type="bar"
-            color="#67c23a"
-            height="300px"
-          />
-          <ElEmpty v-else description="暂无数据" />
+          <div class="chart-container">
+            <TrendChart
+              v-if="trendData"
+              :data="trendData"
+              type="bar"
+              color="#67c23a"
+              height="300px"
+            />
+            <ElEmpty v-else description="暂无数据" />
+          </div>
         </ElCard>
       </ElCol>
     </ElRow>

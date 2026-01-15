@@ -4,10 +4,10 @@
 
     <ElTabs v-model="activeTab" @tab-change="handleTabChange">
       <ElTabPane label="推文看板" name="posts">
-        <PostsDashboard :stats="dashboardStore.postsStats" />
+        <PostsDashboard v-if="activeTab === 'posts'" :stats="dashboardStore.postsStats" />
       </ElTabPane>
       <ElTabPane label="广告看板" name="ads">
-        <AdsDashboard :stats="dashboardStore.adsStats" />
+        <AdsDashboard v-if="activeTab === 'ads'" :stats="dashboardStore.adsStats" />
       </ElTabPane>
     </ElTabs>
   </div>
