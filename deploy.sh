@@ -387,8 +387,15 @@ build_admin() {
 health_check() {
     log_step "健康检查..."
     
+    # 加载环境变量
+    load_env
+    
+    local api_port=${API_PORT:-3001}
+    local web_port=${WEB_PORT:-3003}
+    
     # 检查 API
-    if curl -sf http://localhost:3001/api/health > /dev/null 2>&1; then
+    log_info "检查 API 服务 (localhost:$api_port)..."
+    if curl -sf http://localhost:$api_port/api/health > /dev/null 2>&1; then
         log_info "API 服务正常 ✓"
     else
         log_error "API 服务异常"
@@ -397,7 +404,8 @@ health_check() {
     fi
     
     # 检查 Web
-    if curl -sf http://localhost:3003 > /dev/null 2>&1; then
+    log_info "检查 Web 服务 (localhost:$web_port)..."
+    if curl -sf http://localhost:$web_port > /dev/null 2>&1; then
         log_info "Web 服务正常 ✓"
     else
         log_error "Web 服务异常"
