@@ -376,53 +376,57 @@ build_and_start() {
 # 构建并部署 Admin 静态文件
 # ============================================
 build_admin() {
-    log_step "构建 Admin 后台..."
+    log_step "构建 Admin 后台 (Docker)..."
     cd $APP_DIR
     
-    # 安装依赖
-    log_info "安装依赖..."
-    pnpm install
+    load_env
     
-    # 构建 Admin（增加内存限制，避免 OOM）
-    log_info "构建 Admin 项目..."
-    export NODE_OPTIONS="--max-old-space-size=1024"
-    pnpm --filter @port/admin build
-    unset NODE_OPTIONS
+    # 构建 Admin Docker 镜像
+    log_info "构建 Admin Docker 镜像..."
+    docker-compose -f docker-compose.prod.yml build admin
     
-    # 部署静态文件
-    log_info "部署静态文件到 $ADMIN_DIR..."
-    mkdir -p $ADMIN_DIR
-    rm -rf $ADMIN_DIR/*
-    cp -r apps/admin/dist/* $ADMIN_DIR/
-    
-    # 设置权限
-    chown -R www-data:www-data $ADMIN_DIR 2>/dev/null || true
+    # 启动/重启 Admin 容器
+    log_info "启动 Admin 容器..."
+    docker-compose -f docker-compose.prod.yml up -d admin
     
     log_info "Admin 构建完成 ✓"
     log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
 }
 
 # ============================================
-# 单独部署 Admin
+# 单独部署 Admin（Docker 方式）
 # ============================================
 deploy_admin() {
     check_root "admin"
     cd $APP_DIR
     
-    log_info "开始部署 Admin..."
+    load_env
+    
+    log_info "开始部署 Admin (Docker)..."
     
     # 拉取最新代码
     log_step "拉取最新代码..."
     git pull origin main
     
-    # 构建 Admin
-    build_admin
+    # 构建并启动 Admin 容器
+    log_step "构建 Admin Docker 镜像..."
+    docker-compose -f docker-compose.prod.yml build admin
     
-    # 重载 Nginx
-    nginx -t && systemctl reload nginx
+    log_step "启动 Admin 容器..."
+    docker-compose -f docker-compose.prod.yml up -d admin
     
-    log_info "🎉 Admin 部署完成！"
-    log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
+    # 等待容器启动
+    sleep 3
+    
+    # 检查状态
+    if docker-compose -f docker-compose.prod.yml ps admin | grep -q "Up"; then
+        log_info "🎉 Admin 部署完成！"
+        log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
+    else
+        log_error "Admin 容器启动失败"
+        docker-compose -f docker-compose.prod.yml logs --tail=50 admin
+        exit 1
+    fi
 }
 
 # ============================================
