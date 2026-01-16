@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build": "vite build",
+    "build:check": "vue-tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

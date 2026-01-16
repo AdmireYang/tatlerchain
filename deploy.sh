@@ -383,9 +383,11 @@ build_admin() {
     log_info "安装依赖..."
     pnpm install
     
-    # 构建 Admin
+    # 构建 Admin（增加内存限制，避免 OOM）
     log_info "构建 Admin 项目..."
+    export NODE_OPTIONS="--max-old-space-size=1024"
     pnpm --filter @port/admin build
+    unset NODE_OPTIONS
     
     # 部署静态文件
     log_info "部署静态文件到 $ADMIN_DIR..."
@@ -420,6 +422,53 @@ deploy_admin() {
     nginx -t && systemctl reload nginx
     
     log_info "🎉 Admin 部署完成！"
+    log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
+}
+
+# ============================================
+# 同步 Admin 构建产物（本地构建后上传）
+# ============================================
+sync_admin_dist() {
+    check_root "admin-sync"
+    cd $APP_DIR
+    
+    local ADMIN_DIST="$APP_DIR/apps/admin/dist"
+    local NGINX_ADMIN_DIR="/var/www/tatlerchain/admin"
+    
+    log_step "同步 Admin 构建产物..."
+    
+    # 检查构建产物是否存在
+    if [ ! -d "$ADMIN_DIST" ]; then
+        log_error "Admin 构建产物不存在: $ADMIN_DIST"
+        log_info "请先在本地执行: pnpm --filter @port/admin build"
+        log_info "然后使用 rsync/scp 上传到服务器"
+        exit 1
+    fi
+    
+    # 检查是否有 index.html（确认是有效的构建产物）
+    if [ ! -f "$ADMIN_DIST/index.html" ]; then
+        log_error "构建产物无效，缺少 index.html"
+        exit 1
+    fi
+    
+    # 创建目标目录
+    mkdir -p "$NGINX_ADMIN_DIR"
+    
+    # 复制构建产物
+    log_info "复制构建产物到 Nginx 目录..."
+    rm -rf "$NGINX_ADMIN_DIR"/*
+    cp -r "$ADMIN_DIST"/* "$NGINX_ADMIN_DIR/"
+    
+    # 设置权限
+    chown -R www-data:www-data "$NGINX_ADMIN_DIR" 2>/dev/null || true
+    chmod -R 755 "$NGINX_ADMIN_DIR"
+    
+    # 重载 Nginx
+    log_info "重载 Nginx..."
+    nginx -t && systemctl reload nginx
+    
+    load_env
+    log_info "🎉 Admin 同步完成！"
     log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
 }
 
@@ -672,15 +721,16 @@ show_help() {
     echo "使用方法: ./deploy.sh <command>"
     echo ""
     echo "命令列表:"
-    echo "  init      首次部署（完整安装）"
-    echo "  update    更新部署（拉取代码并重新构建）"
-    echo "  admin     单独部署 Admin 后台"
-    echo "  status    查看服务状态"
-    echo "  logs      查看日志（默认 api，可指定: logs web）"
-    echo "  restart   重启服务（可指定: restart api）"
-    echo "  stop      停止所有服务"
-    echo "  nginx     重新生成 Nginx 配置（从 .env 读取端口）"
-    echo "  help      显示帮助信息"
+    echo "  init        首次部署（完整安装）"
+    echo "  update      更新部署（拉取代码并重新构建）"
+    echo "  admin       单独部署 Admin 后台（服务器构建）"
+    echo "  admin-sync  同步本地 Admin 构建产物（推荐）"
+    echo "  status      查看服务状态"
+    echo "  logs        查看日志（默认 api，可指定: logs web）"
+    echo "  restart     重启服务（可指定: restart api）"
+    echo "  stop        停止所有服务"
+    echo "  nginx       重新生成 Nginx 配置（从 .env 读取端口）"
+    echo "  help        显示帮助信息"
     echo ""
     echo "示例:"
     echo "  ./deploy.sh init           # 首次部署"
@@ -720,6 +770,9 @@ main() {
             ;;
         admin)
             deploy_admin
+            ;;
+        admin-sync)
+            sync_admin_dist
             ;;
         help|--help|-h)
             show_help
