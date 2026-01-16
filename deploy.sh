@@ -354,16 +354,17 @@ build_and_start() {
     log_step "构建并启动服务..."
     cd $APP_DIR
 
-    # 停止旧服务
-    docker-compose -f docker-compose.prod.yml down --remove-orphans 2>/dev/null || true
+    # 停止旧服务（排除 admin）
+    docker-compose -f docker-compose.prod.yml stop api web postgres 2>/dev/null || true
+    docker-compose -f docker-compose.prod.yml rm -f api web 2>/dev/null || true
 
-    # 构建镜像
+    # 构建镜像（只构建 api 和 web，不构建 admin）
     log_info "构建 Docker 镜像（首次可能需要 5-10 分钟）..."
-    docker-compose -f docker-compose.prod.yml build
+    docker-compose -f docker-compose.prod.yml build api web
 
-    # 启动服务
+    # 启动服务（只启动 api 和 web）
     log_info "启动服务..."
-    docker-compose -f docker-compose.prod.yml up -d
+    docker-compose -f docker-compose.prod.yml up -d api web postgres
 
     # 等待服务启动
     log_info "等待服务启动..."
@@ -674,8 +675,8 @@ init_deploy() {
     # 构建并启动
     build_and_start
 
-    # 构建 Admin
-    build_admin
+    # 构建 Admin（暂时跳过，节省资源）
+    # build_admin
 
     # 健康检查
     health_check
