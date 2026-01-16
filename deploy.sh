@@ -466,6 +466,20 @@ stop_services() {
 }
 
 # ============================================
+# 修复 .env 中的 API_BASE_URL（移除端口号）
+# ============================================
+fix_api_base_url() {
+    if [ -f "$APP_DIR/.env" ]; then
+        # 检查是否带端口号
+        if grep -q "API_BASE_URL=http://[^:]*:[0-9]" "$APP_DIR/.env"; then
+            log_warn "检测到 API_BASE_URL 带端口号，自动修复..."
+            sed -i 's|API_BASE_URL=http://\([^:]*\):[0-9]*|API_BASE_URL=http://\1|g' "$APP_DIR/.env"
+            log_info "API_BASE_URL 已修复为: $(grep API_BASE_URL $APP_DIR/.env)"
+        fi
+    fi
+}
+
+# ============================================
 # 更新部署
 # ============================================
 update_deploy() {
@@ -481,6 +495,9 @@ update_deploy() {
     log_step "拉取最新代码..."
     git fetch origin
     git reset --hard origin/main
+
+    # 自动修复 API_BASE_URL（移除端口号）
+    fix_api_base_url
 
     # 重新生成 Nginx 配置（从 .env 读取端口）
     setup_nginx_config
