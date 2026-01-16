@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
+import { RegisterDto } from './dto/register.dto'
 import { Public, CurrentUser } from '@/common/decorators'
 import { JwtAuthGuard } from '@/common/guards'
 
@@ -16,6 +17,16 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto)
+  }
+
+  /**
+   * 用户注册
+   * POST /api/backstage/auth/register
+   */
+  @Public()
+  @Post('register')
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto)
   }
 
   /**

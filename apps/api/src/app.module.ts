@@ -13,10 +13,19 @@ import { BackstageModule } from '@/backstage/backstage.module'
 
 @Module({
   imports: [
-    // 配置模块 - 读取根目录和本地 .env 文件
+    // 配置模块 - 根据环境加载对应的 .env 文件
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env', '../../.env.local', '../../.env'],
+      envFilePath: [
+        // 本地开发优先
+        '.env.local',
+        '.env.development',
+        '.env',
+        // monorepo 根目录
+        '../../.env.local',
+        '../../.env.development',
+        '../../.env',
+      ],
     }),
 
     // 数据库模块

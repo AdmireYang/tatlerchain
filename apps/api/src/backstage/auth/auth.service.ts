@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { UsersService } from '@/shared/services/users.service'
 import { LoginDto } from './dto/login.dto'
+import { RegisterDto } from './dto/register.dto'
 
 @Injectable()
 export class AuthService {
@@ -50,5 +51,32 @@ export class AuthService {
    */
   async getProfile(userId: string) {
     return this.usersService.findById(userId)
+  }
+
+  /**
+   * 用户注册
+   */
+  async register(registerDto: RegisterDto) {
+    const { email, password, name } = registerDto
+    // 创建用户（UsersService.create 内部会检查邮箱重复并加密密码）
+    const user = await this.usersService.create({
+      email,
+      password,
+      name,
+    })
+
+    // 生成 JWT Token
+    const payload = { sub: user.id, email: user.email }
+    const accessToken = this.jwtService.sign(payload)
+
+    return {
+      accessToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+    }
   }
 }

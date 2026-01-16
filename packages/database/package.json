@@ -11,14 +11,17 @@
     }
   },
   "scripts": {
-    "db:generate": "dotenv -e ../../.env -- prisma generate",
-    "db:migrate": "dotenv -e ../../.env -- prisma migrate dev",
-    "db:push": "dotenv -e ../../.env -- prisma db push",
-    "db:studio": "dotenv -e ../../.env -- prisma studio",
-    "db:seed": "dotenv -e ../../.env -- ts-node prisma/seed.ts"
+    "db:generate": "dotenv -e ../../.env.development -- prisma generate",
+    "db:migrate": "dotenv -e ../../.env.development -- prisma migrate dev",
+    "db:push": "dotenv -e ../../.env.development -- prisma db push",
+    "db:studio": "dotenv -e ../../.env.development -- prisma studio",
+    "db:seed": "dotenv -e ../../.env.development -- ts-node prisma/seed.ts",
+    "db:generate:prod": "dotenv -e ../../.env -- prisma generate",
+    "db:push:prod": "dotenv -e ../../.env -- prisma db push",
+    "db:seed:prod": "dotenv -e ../../.env -- ts-node prisma/seed.ts"
   },
   "prisma": {
-    "seed": "dotenv -e ../../.env -- ts-node prisma/seed.ts"
+    "seed": "dotenv -e ../../.env.development -- ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.8.0",
