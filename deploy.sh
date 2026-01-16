@@ -168,9 +168,9 @@ setup_docker_mirror() {
     cat > /etc/docker/daemon.json << 'EOF'
 {
   "registry-mirrors": [
-    "https://dockerproxy.com",
-    "https://docker.nju.edu.cn",
-    "https://docker.m.daocloud.io"
+    "https://mirror.ccs.tencentyun.com",
+    "https://hub-mirror.c.163.com",
+    "https://registry.docker-cn.com"
   ],
   "max-concurrent-downloads": 10,
   "log-driver": "json-file",
