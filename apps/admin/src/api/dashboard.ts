@@ -1,7 +1,7 @@
 /**
  * Dashboard API
  */
-import request from '@/utils/request'
+import { get } from '@/utils/request'
 
 /**
  * 推文统计数据
@@ -57,20 +57,20 @@ export interface DashboardOverview {
 /**
  * 获取综合统计数据
  */
-export const getDashboardOverview = () => {
-  return request.get<DashboardOverview>('/backstage/dashboard')
+export const getDashboardOverview = (): Promise<DashboardOverview> => {
+  return get<DashboardOverview>('/backstage/dashboard')
 }
 
 /**
  * 获取推文统计数据
  */
-export const getPostsStats = () => {
-  return request.get<PostStats>('/backstage/dashboard/posts')
+export const getPostsStats = (): Promise<PostStats> => {
+  return get<PostStats>('/backstage/dashboard/posts')
 }
 
 /**
  * 获取广告统计数据
  */
-export const getAdsStats = () => {
-  return request.get<AdStats>('/backstage/dashboard/ads')
+export const getAdsStats = (): Promise<AdStats> => {
+  return get<AdStats>('/backstage/dashboard/ads')
 }
