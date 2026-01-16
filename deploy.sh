@@ -220,99 +220,40 @@ setup_ssh_key() {
 }
 
 # ============================================
-# 配置 Nginx（无域名版）
+# 加载 .env 环境变量
+# ============================================
+load_env() {
+    if [ -f "$APP_DIR/.env" ]; then
+        export $(cat "$APP_DIR/.env" | grep -v '^#' | xargs)
+        log_info "环境变量加载完成 ✓"
+    else
+        log_warn ".env 文件不存在，使用默认值"
+        export API_PORT=3001
+        export WEB_PORT=3003
+    fi
+}
+
+# ============================================
+# 配置 Nginx（从模板生成，支持环境变量）
 # ============================================
 setup_nginx_config() {
     log_step "配置 Nginx..."
     
-    cat > /etc/nginx/sites-available/tatlerchain << 'EOF'
-# TatlerChain Nginx 配置
-upstream api_backend {
-    server 127.0.0.1:3001;
-    keepalive 32;
-}
-
-upstream web_backend {
-    server 127.0.0.1:3003;
-    keepalive 32;
-}
-
-# 主站
-server {
-    listen 80;
-    server_name _;
-
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
-    gzip_min_length 1000;
-
-    location /api/ {
-        proxy_pass http://api_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Connection "";
-        client_max_body_size 20M;
-    }
-
-    location /uploads/ {
-        alias /var/www/tatlerchain/uploads/;
-        expires 30d;
-        add_header Cache-Control "public, immutable";
-    }
-
-    location /_nuxt/ {
-        proxy_pass http://web_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    location / {
-        proxy_pass http://web_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
-
-# Admin 后台
-server {
-    listen 8080;
-    server_name _;
-
-    root /var/www/tatlerchain-admin;
-    index index.html;
-
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript;
-
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    location /api/ {
-        proxy_pass http://api_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        client_max_body_size 20M;
-    }
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-}
-EOF
+    # 加载环境变量
+    load_env
+    
+    # 检查模板文件
+    local NGINX_TEMPLATE="$APP_DIR/scripts/nginx/tatlerchain.conf"
+    if [ ! -f "$NGINX_TEMPLATE" ]; then
+        log_error "Nginx 模板文件不存在: $NGINX_TEMPLATE"
+        exit 1
+    fi
+    
+    # 使用 envsubst 从模板生成配置
+    log_info "从模板生成 Nginx 配置..."
+    log_info "  API_PORT: ${API_PORT:-3001}"
+    log_info "  WEB_PORT: ${WEB_PORT:-3003}"
+    envsubst '${API_PORT} ${WEB_PORT}' < "$NGINX_TEMPLATE" > /etc/nginx/sites-available/tatlerchain
 
     rm -f /etc/nginx/sites-enabled/default
     ln -sf /etc/nginx/sites-available/tatlerchain /etc/nginx/sites-enabled/
@@ -541,14 +482,14 @@ update_deploy() {
     git fetch origin
     git reset --hard origin/main
 
+    # 重新生成 Nginx 配置（从 .env 读取端口）
+    setup_nginx_config
+
     # 重新构建并启动
     build_and_start
 
     # 构建 Admin（暂时跳过）
     # build_admin
-
-    # 重启 Nginx
-    systemctl reload nginx 2>/dev/null || true
 
     # 健康检查
     health_check
@@ -635,6 +576,16 @@ show_result() {
 }
 
 # ============================================
+# 重新配置 Nginx（从 .env 读取端口）
+# ============================================
+reload_nginx() {
+    check_root "nginx"
+    cd $APP_DIR
+    setup_nginx_config
+    log_info "Nginx 配置已更新 ✓"
+}
+
+# ============================================
 # 帮助信息
 # ============================================
 show_help() {
@@ -650,6 +601,7 @@ show_help() {
     echo "  logs      查看日志（默认 api，可指定: logs web）"
     echo "  restart   重启服务（可指定: restart api）"
     echo "  stop      停止所有服务"
+    echo "  nginx     重新生成 Nginx 配置（从 .env 读取端口）"
     echo "  help      显示帮助信息"
     echo ""
     echo "示例:"
@@ -658,6 +610,7 @@ show_help() {
     echo "  ./deploy.sh logs api       # 查看 API 日志"
     echo "  ./deploy.sh logs web       # 查看 Web 日志"
     echo "  ./deploy.sh restart api    # 重启 API 服务"
+    echo "  ./deploy.sh nginx          # 修改端口后重新配置 Nginx"
     echo ""
 }
 
@@ -683,6 +636,9 @@ main() {
             ;;
         stop)
             stop_services
+            ;;
+        nginx)
+            reload_nginx
             ;;
         help|--help|-h)
             show_help
