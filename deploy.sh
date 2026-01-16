@@ -254,13 +254,16 @@ setup_nginx_config() {
     log_info "  API_PORT: ${API_PORT:-3001}"
     log_info "  WEB_PORT: ${WEB_PORT:-3003}"
     log_info "  ADMIN_PORT: ${ADMIN_PORT:-8080}"
+    log_info "  ADMIN_INTERNAL_PORT: ${ADMIN_INTERNAL_PORT:-8081}"
     
     # 设置默认值（envsubst 需要变量存在）
     export API_PORT=${API_PORT:-3001}
     export WEB_PORT=${WEB_PORT:-3003}
+    # 设置默认值
     export ADMIN_PORT=${ADMIN_PORT:-8080}
+    export ADMIN_INTERNAL_PORT=${ADMIN_INTERNAL_PORT:-8081}
     
-    envsubst '${API_PORT} ${WEB_PORT} ${ADMIN_PORT}' < "$NGINX_TEMPLATE" > /etc/nginx/sites-available/tatlerchain
+    envsubst '${API_PORT} ${WEB_PORT} ${ADMIN_PORT} ${ADMIN_INTERNAL_PORT}' < "$NGINX_TEMPLATE" > /etc/nginx/sites-available/tatlerchain
 
     rm -f /etc/nginx/sites-enabled/default
     ln -sf /etc/nginx/sites-available/tatlerchain /etc/nginx/sites-enabled/
