@@ -164,13 +164,14 @@ setup_docker_mirror() {
     log_step "配置 Docker 镜像加速..."
     mkdir -p /etc/docker
     
-    # 使用多个可用的镜像源
+    # 使用阿里云及其他可用镜像源（2024-2026 可用）
     cat > /etc/docker/daemon.json << 'EOF'
 {
   "registry-mirrors": [
-    "https://mirror.ccs.tencentyun.com",
-    "https://hub-mirror.c.163.com",
-    "https://registry.docker-cn.com"
+    "https://docker.1ms.run",
+    "https://docker.xuanyuan.me",
+    "https://dockerhub.icu",
+    "https://hub.rat.dev"
   ],
   "max-concurrent-downloads": 10,
   "log-driver": "json-file",
