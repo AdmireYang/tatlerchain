@@ -253,7 +253,14 @@ setup_nginx_config() {
     log_info "从模板生成 Nginx 配置..."
     log_info "  API_PORT: ${API_PORT:-3001}"
     log_info "  WEB_PORT: ${WEB_PORT:-3003}"
-    envsubst '${API_PORT} ${WEB_PORT}' < "$NGINX_TEMPLATE" > /etc/nginx/sites-available/tatlerchain
+    log_info "  ADMIN_PORT: ${ADMIN_PORT:-8080}"
+    
+    # 设置默认值（envsubst 需要变量存在）
+    export API_PORT=${API_PORT:-3001}
+    export WEB_PORT=${WEB_PORT:-3003}
+    export ADMIN_PORT=${ADMIN_PORT:-8080}
+    
+    envsubst '${API_PORT} ${WEB_PORT} ${ADMIN_PORT}' < "$NGINX_TEMPLATE" > /etc/nginx/sites-available/tatlerchain
 
     rm -f /etc/nginx/sites-enabled/default
     ln -sf /etc/nginx/sites-available/tatlerchain /etc/nginx/sites-enabled/
@@ -366,19 +373,54 @@ build_and_start() {
 }
 
 # ============================================
-# 构建 Admin 静态文件
+# 构建并部署 Admin 静态文件
 # ============================================
 build_admin() {
     log_step "构建 Admin 后台..."
     cd $APP_DIR
     
+    # 安装依赖
+    log_info "安装依赖..."
     pnpm install
+    
+    # 构建 Admin
+    log_info "构建 Admin 项目..."
     pnpm --filter @port/admin build
     
+    # 部署静态文件
+    log_info "部署静态文件到 $ADMIN_DIR..."
     mkdir -p $ADMIN_DIR
+    rm -rf $ADMIN_DIR/*
     cp -r apps/admin/dist/* $ADMIN_DIR/
     
+    # 设置权限
+    chown -R www-data:www-data $ADMIN_DIR 2>/dev/null || true
+    
     log_info "Admin 构建完成 ✓"
+    log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
+}
+
+# ============================================
+# 单独部署 Admin
+# ============================================
+deploy_admin() {
+    check_root "admin"
+    cd $APP_DIR
+    
+    log_info "开始部署 Admin..."
+    
+    # 拉取最新代码
+    log_step "拉取最新代码..."
+    git pull origin main
+    
+    # 构建 Admin
+    build_admin
+    
+    # 重载 Nginx
+    nginx -t && systemctl reload nginx
+    
+    log_info "🎉 Admin 部署完成！"
+    log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
 }
 
 # ============================================
@@ -392,6 +434,7 @@ health_check() {
     
     local api_port=${API_PORT:-3001}
     local web_port=${WEB_PORT:-3003}
+    local admin_port=${ADMIN_PORT:-8080}
     
     # 检查 API
     log_info "检查 API 服务 (localhost:$api_port)..."
@@ -411,6 +454,14 @@ health_check() {
         log_error "Web 服务异常"
         docker-compose -f docker-compose.prod.yml logs --tail=50 web
         return 1
+    fi
+    
+    # 检查 Admin（通过 Nginx $admin_port 端口）
+    log_info "检查 Admin 服务 (localhost:$admin_port)..."
+    if curl -sf http://localhost:$admin_port > /dev/null 2>&1; then
+        log_info "Admin 服务正常 ✓"
+    else
+        log_warn "Admin 服务未部署或异常（可通过 ./deploy.sh admin 部署）"
     fi
     
     log_info "健康检查通过 ✓"
@@ -513,8 +564,8 @@ update_deploy() {
     # 重新构建并启动
     build_and_start
 
-    # 构建 Admin（暂时跳过）
-    # build_admin
+    # 构建 Admin
+    build_admin
 
     # 健康检查
     health_check
@@ -566,8 +617,8 @@ init_deploy() {
     # 构建并启动
     build_and_start
 
-    # 构建 Admin（暂时跳过）
-    # build_admin
+    # 构建 Admin
+    build_admin
 
     # 健康检查
     health_check
@@ -588,8 +639,9 @@ init_deploy() {
 show_result() {
     echo ""
     echo "访问地址:"
+    load_env
     echo "  - 主站: http://$SERVER_IP"
-    echo "  - 后台: http://$SERVER_IP:8080"
+    echo "  - 后台: http://$SERVER_IP:${ADMIN_PORT:-8080}"
     echo "  - API:  http://$SERVER_IP/api/health"
     echo ""
     echo "常用命令:"
@@ -622,6 +674,7 @@ show_help() {
     echo "命令列表:"
     echo "  init      首次部署（完整安装）"
     echo "  update    更新部署（拉取代码并重新构建）"
+    echo "  admin     单独部署 Admin 后台"
     echo "  status    查看服务状态"
     echo "  logs      查看日志（默认 api，可指定: logs web）"
     echo "  restart   重启服务（可指定: restart api）"
@@ -664,6 +717,9 @@ main() {
             ;;
         nginx)
             reload_nginx
+            ;;
+        admin)
+            deploy_admin
             ;;
         help|--help|-h)
             show_help
