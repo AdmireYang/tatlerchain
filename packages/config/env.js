@@ -1,6 +1,8 @@
 /**
  * 全局环境变量配置
- * 自动加载根目录的 .env 文件，所有子项目共享
+ * 根据 NODE_ENV 自动加载对应的 .env 文件
+ * - 开发环境：.env.development
+ * - 生产环境：.env.production 或 .env
  */
 import { config as dotenvConfig } from 'dotenv'
 import { resolve, dirname } from 'path'
@@ -8,17 +10,25 @@ import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-// 查找并加载根目录的 .env 文件
+// 根据环境加载对应的 .env 文件
 function loadEnv() {
+  const nodeEnv = process.env.NODE_ENV || 'development'
+  const envFile = nodeEnv === 'production' ? '.env' : `.env.${nodeEnv}`
+
+  // 可能的路径（按优先级）
   const possiblePaths = [
-    resolve(process.cwd(), '.env'),
+    resolve(process.cwd(), envFile),
+    resolve(process.cwd(), '.env'), // 回退到 .env
+    resolve(process.cwd(), '../../', envFile),
     resolve(process.cwd(), '../../.env'),
+    resolve(__dirname, '../../', envFile),
     resolve(__dirname, '../../.env'),
   ]
 
   for (const envPath of possiblePaths) {
     const result = dotenvConfig({ path: envPath })
     if (!result.error) {
+      console.log(`✅ 已加载环境配置: ${envPath}`)
       break
     }
   }

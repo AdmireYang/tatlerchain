@@ -59,13 +59,15 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // 服务端 SSR 使用的 API 地址（Docker 内部网络）
-    // Nuxt 会自动将 NUXT_API_BASE_SERVER 映射到此配置
-    apiBaseServer: apiConfig.baseUrl,
+    // 服务端 SSR 使用的 API 地址
+    // 开发环境：http://localhost:3001
+    // 生产环境：运行时由 NUXT_API_BASE_SERVER 覆盖（如 http://api:3001）
+    apiBaseServer: 'http://localhost:3001',
     public: {
       // 客户端浏览器使用的 API 地址
-      // Nuxt 会自动将 NUXT_PUBLIC_API_BASE 映射到此配置
-      apiBase: apiConfig.baseUrl,
+      // 开发环境：http://localhost:3001
+      // 生产环境：运行时由 NUXT_PUBLIC_API_BASE 覆盖（如 http://your-domain:3001）
+      apiBase: 'http://localhost:3001',
     },
   },
 

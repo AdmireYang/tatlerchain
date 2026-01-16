@@ -20,6 +20,7 @@ export default defineConfig({
   },
   server: {
     port: ports.admin,
+    open: true, // 使用系统默认浏览器打开
     proxy: {
       '/api': {
         target: apiConfig.baseUrl,
