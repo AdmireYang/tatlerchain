@@ -39,7 +39,7 @@ export function createAd(data: CreateAdDto) {
  * 更新广告
  */
 export function updateAd(id: string, data: UpdateAdDto) {
-  return request.patch<ApiResponse<Advertisement>>(`/backstage/ads/${id}`, data)
+  return request.put<ApiResponse<Advertisement>>(`/backstage/ads/${id}`, data)
 }
 
 /**
