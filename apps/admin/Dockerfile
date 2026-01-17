@@ -28,8 +28,11 @@ COPY --from=builder /app/apps/admin/dist /usr/share/nginx/html
 # 复制 Nginx 配置模板
 COPY apps/admin/nginx.conf /etc/nginx/templates/default.conf.template
 
-# 设置默认环境变量
-ENV API_PORT=3001
+# 接收构建参数（从 docker-compose 或构建命令传递）
+ARG API_PORT=3001
+
+# 设置环境变量（使用构建参数）
+ENV API_PORT=${API_PORT}
 
 EXPOSE 80
 
