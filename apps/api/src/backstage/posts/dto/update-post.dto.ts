@@ -35,7 +35,14 @@ export class UpdatePostDto {
 
   @ApiPropertyOptional({ description: '封面图片 URL' })
   @IsOptional()
-  @IsUrl({}, { message: '请输入有效的封面图片 URL' })
+  @IsUrl(
+    {
+      require_tld: false, // 允许 localhost 等无 TLD 的域名
+      require_protocol: true, // 要求协议（http/https）
+      allow_protocol_relative_urls: false, // 不允许协议相对 URL
+    },
+    { message: '请输入有效的封面图片 URL' }
+  )
   coverImage?: string
 
   @ApiPropertyOptional({ description: '详情首图', type: DetailImageDto })

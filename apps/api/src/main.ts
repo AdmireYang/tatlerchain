@@ -2,13 +2,16 @@ import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { join } from 'path'
+import { ConfigService } from '@nestjs/config'
+import { join, resolve } from 'path'
+import * as fs from 'fs'
 import { AppModule } from '@/app.module'
 import { HttpExceptionFilter } from '@/common/filters'
 import { TransformInterceptor } from '@/common/interceptors'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
+  const configService = app.get(ConfigService)
 
   // 启用 CORS
   app.enableCors({
@@ -38,7 +41,27 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor())
 
   // 静态文件服务（上传文件）
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+  // 使用与 UploadService 相同的路径逻辑
+  const uploadDir = configService.get<string>('UPLOAD_DIR')
+  let staticAssetsPath: string
+
+  if (uploadDir) {
+    // 如果配置了环境变量，使用绝对路径
+    staticAssetsPath = uploadDir.startsWith('/') ? uploadDir : resolve(process.cwd(), uploadDir)
+  } else {
+    // 默认使用相对于工作目录的路径（与 UploadService 保持一致）
+    // 在 Docker 中 process.cwd() 是 /app，在本地开发是项目根目录
+    staticAssetsPath = resolve(process.cwd(), 'uploads')
+  }
+
+  // 确保目录存在
+  if (!fs.existsSync(staticAssetsPath)) {
+    fs.mkdirSync(staticAssetsPath, { recursive: true })
+    console.log(`✅ 创建静态文件目录: ${staticAssetsPath}`)
+  }
+
+  console.log(`📁 静态文件目录: ${staticAssetsPath}`)
+  app.useStaticAssets(staticAssetsPath, {
     prefix: '/uploads/',
   })
 

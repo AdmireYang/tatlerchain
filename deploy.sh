@@ -623,7 +623,7 @@ update_deploy() {
     build_and_start
 
     # 构建 Admin
-    build_admin
+    # build_admin
 
     # 健康检查
     health_check

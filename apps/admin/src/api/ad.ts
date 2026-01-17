@@ -53,5 +53,5 @@ export function deleteAd(id: string) {
  * 发布广告
  */
 export function publishAd(id: string) {
-  return request.patch<ApiResponse<Advertisement>>(`/backstage/ads/${id}/publish`)
+  return request.put<ApiResponse<Advertisement>>(`/backstage/ads/${id}/publish`)
 }
