@@ -51,5 +51,5 @@ export function deletePost(id: string) {
  * 发布推文
  */
 export function publishPost(id: string) {
-  return request.post<ApiResponse<Post>>(`/backstage/posts/${id}/publish`)
+  return request.patch<ApiResponse<Post>>(`/backstage/posts/${id}/publish`)
 }

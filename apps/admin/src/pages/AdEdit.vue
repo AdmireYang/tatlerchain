@@ -5,7 +5,7 @@
       <h1 class="text-2xl font-bold">{{ isEdit ? '编辑广告' : '新建广告' }}</h1>
       <div class="actions">
         <ElButton @click="handleCancel">取消</ElButton>
-        <ElButton type="default" :loading="saving" @click="handleSave"> 保存 </ElButton>
+        <ElButton type="default" :loading="saving" @click="handleSave"> 保存草稿 </ElButton>
         <ElButton type="primary" :loading="publishing" @click="handlePublish"> 发布 </ElButton>
       </div>
     </div>
@@ -81,7 +81,7 @@ async function handleSave() {
 
   saving.value = true
   try {
-    const data = formData.value as CreateAdDto
+    const data = { ...formData.value, status: 'INACTIVE' } as CreateAdDto & { status: 'INACTIVE' }
 
     if (isEdit.value) {
       await adStore.update(adId.value, data)

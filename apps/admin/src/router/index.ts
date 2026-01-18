@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/stores'
 
 const routes: RouteRecordRaw[] = [
@@ -58,6 +59,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/AdEdit.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: 'users',
+        name: 'Users',
+        component: () => import('../pages/Users.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
     ],
   },
 ]
@@ -73,10 +80,17 @@ router.beforeEach((to, _from, next) => {
 
   // 检查路由是否需要认证
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth !== false)
+  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin === true)
 
   if (requiresAuth) {
     // 需要认证的路由
     if (authStore.checkAuth()) {
+      // 检查是否需要管理员权限
+      if (requiresAdmin && authStore.user?.role !== 'ADMIN') {
+        ElMessage.error('没有权限访问该页面')
+        next({ path: '/dashboard' })
+        return
+      }
       // 已认证，允许访问
       next()
     } else {

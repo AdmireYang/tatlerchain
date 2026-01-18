@@ -29,8 +29,7 @@
         <ElFormItem prop="email">
           <ElInput
             v-model="formData.email"
-            type="email"
-            placeholder="请输入邮箱"
+            placeholder="请输入账号"
             size="large"
             :prefix-icon="User"
             clearable
@@ -94,8 +93,8 @@ const loading = ref(false)
 // 表单验证规则
 const rules: FormRules = {
   email: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { type: 'email', message: '请输入有效的邮箱地址', trigger: 'blur' },
+    { required: true, message: '请输入账号', trigger: 'blur' },
+    { min: 3, message: '账号长度至少3位', trigger: 'blur' },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },

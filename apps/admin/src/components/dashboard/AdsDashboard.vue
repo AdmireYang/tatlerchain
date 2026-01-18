@@ -31,41 +31,6 @@
       </ElCol>
     </ElRow>
 
-    <!-- 点击率卡片 -->
-    <ElRow :gutter="16" class="mb-4">
-      <ElCol :span="24">
-        <ElCard>
-          <div class="ctr-display">
-            <div class="ctr-label">平均点击率 (CTR)</div>
-            <div class="ctr-value">{{ stats?.ctr || '0' }}%</div>
-          </div>
-        </ElCard>
-      </ElCol>
-    </ElRow>
-
-    <!-- 趋势图表 -->
-    <ElRow :gutter="16" class="mb-4">
-      <ElCol :span="24">
-        <ElCard shadow="never">
-          <template #header>
-            <div class="card-header">
-              <span>广告点击率趋势（最近 7 天）</span>
-            </div>
-          </template>
-          <div class="chart-container">
-            <TrendChart
-              v-if="trendData"
-              :data="trendData"
-              type="bar"
-              color="#67c23a"
-              height="300px"
-            />
-            <ElEmpty v-else description="暂无数据" />
-          </div>
-        </ElCard>
-      </ElCol>
-    </ElRow>
-
     <!-- 表现最好的广告 -->
     <ElRow :gutter="16">
       <ElCol :span="24">
@@ -98,6 +63,16 @@
                 {{ formatDate(row.publishedAt) }}
               </template>
             </ElTableColumn>
+            <ElTableColumn label="操作" width="150" fixed="right">
+              <template #default="{ row }">
+                <ElButton type="primary" size="small" text @click="handlePreview(row.linkUrl)">
+                  预览
+                </ElButton>
+                <ElButton type="primary" size="small" text @click="handleEdit(row.id)">
+                  编辑
+                </ElButton>
+              </template>
+            </ElTableColumn>
           </ElTable>
           <ElEmpty v-else description="暂无数据" />
         </ElCard>
@@ -107,33 +82,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { PictureFilled, Check, Mouse, View } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import StatCard from './StatCard.vue'
-import TrendChart from './TrendChart.vue'
 import type { AdStats } from '@/api/dashboard'
+
+const router = useRouter()
 
 interface Props {
   stats: AdStats | null
 }
 
 const props = defineProps<Props>()
-
-// 格式化趋势数据
-const trendData = computed(() => {
-  if (!props.stats?.trend || props.stats.trend.length === 0) {
-    return null
-  }
-
-  return {
-    labels: props.stats.trend.map((item) => {
-      const date = new Date(item.date)
-      return `${date.getMonth() + 1}/${date.getDate()}`
-    }),
-    values: props.stats.trend.map((item) => item.ctr),
-    name: '点击率 (%)',
-  }
-})
 
 // 格式化日期
 const formatDate = (dateStr: string | null) => {
@@ -146,6 +107,20 @@ const formatDate = (dateStr: string | null) => {
     hour: '2-digit',
     minute: '2-digit',
   })
+}
+
+// 预览广告
+const handlePreview = (linkUrl: string) => {
+  if (!linkUrl) {
+    ElMessage.warning('该广告没有设置链接')
+    return
+  }
+  window.open(linkUrl, '_blank')
+}
+
+// 编辑广告
+const handleEdit = (id: string) => {
+  router.push(`/ads/edit/${id}`)
 }
 </script>
 
@@ -160,23 +135,6 @@ const formatDate = (dateStr: string | null) => {
 
   .mb-4 {
     margin-bottom: 16px;
-  }
-
-  .ctr-display {
-    text-align: center;
-    padding: 20px 0;
-
-    .ctr-label {
-      font-size: 16px;
-      color: #909399;
-      margin-bottom: 12px;
-    }
-
-    .ctr-value {
-      font-size: 48px;
-      font-weight: 700;
-      color: #67c23a;
-    }
   }
 }
 </style>

@@ -36,19 +36,19 @@
           <!-- 推文内容 -->
           <div class="post-content">
             <div class="post-header">
-              <div class="post-title" :title="post.title">{{ post.title }}</div>
+              <div class="post-title" :title="post.title" @click="handlePreview(post.slug)">
+                {{ post.title }}
+              </div>
+              <div v-if="post.excerpt" class="post-excerpt">{{ post.excerpt }}</div>
               <div class="post-meta">
-                <ElTag v-if="post.status === 'DRAFT'" type="info" size="small">草稿</ElTag>
-                <ElTag v-else-if="post.status === 'PUBLISHED'" type="success" size="small">
-                  已发布
-                </ElTag>
-                <ElTag v-else-if="post.status === 'ARCHIVED'" type="warning" size="small">
-                  已归档
-                </ElTag>
+                <ElCheckbox
+                  :model-value="post.status === 'PUBLISHED'"
+                  @change="handleToggleStatus(post.id, post.status)"
+                  label="在官网展示"
+                />
                 <span class="post-category">{{ post.category }}</span>
                 <span class="post-views">浏览 {{ post.viewCount }}</span>
               </div>
-              <div v-if="post.excerpt" class="post-excerpt">{{ post.excerpt }}</div>
             </div>
           </div>
 
@@ -56,12 +56,16 @@
           <div class="post-actions">
             <ElButton size="small" @click="handleEdit(post.id)">编辑</ElButton>
             <ElButton
-              v-if="post.status === 'DRAFT'"
+              v-if="post.status === 'PUBLISHED'"
               size="small"
-              type="success"
-              @click="handlePublish(post.id)"
+              @click="handlePreview(post.slug)"
             >
-              发布
+              <ElIcon><View /></ElIcon>
+              预览
+            </ElButton>
+            <ElButton size="small" @click="handleCopyLink(post.slug)">
+              <ElIcon><Link /></ElIcon>
+              复制链接
             </ElButton>
             <ElButton size="small" type="danger" @click="handleDelete(post.id)">删除</ElButton>
           </div>
@@ -88,11 +92,11 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Plus, Picture } from '@element-plus/icons-vue'
+import { Plus, Picture, View, Link } from '@element-plus/icons-vue'
 import { usePostStore } from '@/stores'
 import { useTable } from '@/composables'
 import { getPosts } from '@/api'
-import { showDeleteConfirm, showPublishConfirm } from '@/utils'
+import { showDeleteConfirm } from '@/utils'
 import ListSkeleton from '@/components/common/ListSkeleton.vue'
 
 const router = useRouter()
@@ -112,17 +116,55 @@ function handleEdit(id: string) {
   router.push(`/posts/edit/${id}`)
 }
 
-// 发布推文
-async function handlePublish(id: string) {
-  const confirmed = await showPublishConfirm('这篇推文')
-  if (!confirmed) return
+// 预览推文
+function handlePreview(slug: string) {
+  const webUrl = import.meta.env.VITE_WEB_URL || 'http://localhost:3004'
+  const previewUrl = `${webUrl}/post/${slug}`
+  window.open(previewUrl, '_blank')
+}
+
+// 复制链接
+async function handleCopyLink(slug: string) {
+  const webUrl = import.meta.env.VITE_WEB_URL || 'http://localhost:3004'
+  const postUrl = `${webUrl}/posts/${slug}`
 
   try {
-    await postStore.publish(id)
-    ElMessage.success('发布成功')
-    fetchData()
+    await navigator.clipboard.writeText(postUrl)
+    ElMessage.success('链接已复制到剪贴板')
   } catch {
-    ElMessage.error('发布失败')
+    // 降级方案：使用传统方法复制
+    const textarea = document.createElement('textarea')
+    textarea.value = postUrl
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    try {
+      document.execCommand('copy')
+      ElMessage.success('链接已复制到剪贴板')
+    } catch {
+      ElMessage.error('复制失败，请手动复制')
+    }
+    document.body.removeChild(textarea)
+  }
+}
+
+// 切换展示状态
+async function handleToggleStatus(id: string, currentStatus: string) {
+  try {
+    if (currentStatus === 'PUBLISHED') {
+      // 当前已发布，取消发布（改为草稿）
+      await postStore.update(id, { status: 'DRAFT' })
+      ElMessage.success('已取消在官网展示')
+      fetchData()
+    } else {
+      // 当前是草稿或归档状态，发布
+      await postStore.publish(id)
+      ElMessage.success('已发布到官网')
+      fetchData()
+    }
+  } catch {
+    ElMessage.error('操作失败')
   }
 }
 
@@ -220,6 +262,12 @@ onMounted(() => {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          cursor: pointer;
+          transition: color 0.3s;
+
+          &:hover {
+            color: #409eff;
+          }
         }
 
         .post-meta {
@@ -244,6 +292,7 @@ onMounted(() => {
           text-overflow: ellipsis;
           display: -webkit-box;
           -webkit-line-clamp: 2;
+          line-clamp: 2;
           -webkit-box-orient: vertical;
         }
       }

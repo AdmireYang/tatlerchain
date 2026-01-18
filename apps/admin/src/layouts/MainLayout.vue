@@ -25,6 +25,10 @@
           <ElIcon><Picture /></ElIcon>
           <template #title>广告管理</template>
         </ElMenuItem>
+        <ElMenuItem v-if="isAdmin" index="/users">
+          <ElIcon><User /></ElIcon>
+          <template #title>账号管理</template>
+        </ElMenuItem>
       </ElMenu>
     </ElAside>
 
@@ -83,6 +87,7 @@ import {
   DataLine,
   Document,
   Picture,
+  User,
   Fold,
   Expand,
   ArrowDown,
@@ -110,6 +115,9 @@ const userInitial = computed(() => {
   const name = authStore.user?.name || 'U'
   return name.charAt(0).toUpperCase()
 })
+
+// 是否为管理员
+const isAdmin = computed(() => authStore.user?.role === 'ADMIN')
 
 /**
  * 切换侧边栏折叠状态

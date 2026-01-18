@@ -77,13 +77,13 @@ export class UsersService {
    * 创建用户
    */
   async create(data: { email: string; password: string; name: string; role?: Role }) {
-    // 检查邮箱是否已存在
+    // 检查账号是否已存在
     const existing = await this.prisma.user.findUnique({
       where: { email: data.email },
     })
 
     if (existing) {
-      throw new ConflictException('邮箱已存在')
+      throw new ConflictException('账号已存在')
     }
 
     // 加密密码
@@ -117,7 +117,7 @@ export class UsersService {
       role?: Role
     }
   ) {
-    // 如果更新邮箱，检查是否已存在
+    // 如果更新账号，检查是否已存在
     if (data.email) {
       const existing = await this.prisma.user.findFirst({
         where: {
@@ -127,7 +127,7 @@ export class UsersService {
       })
 
       if (existing) {
-        throw new ConflictException('邮箱已存在')
+        throw new ConflictException('账号已存在')
       }
     }
 

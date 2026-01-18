@@ -32,7 +32,10 @@ export interface Post {
   publishedAt?: string
   author: User
   viewCount: number
-  advertisements: Advertisement[]
+  advertisements: {
+    advertisement: Advertisement
+    sortOrder: number
+  }[]
   createdAt: string
   updatedAt: string
 }
@@ -49,11 +52,15 @@ export interface CreatePostDto {
     authorName: string
     authorLink: string
   }
-  advertisementIds?: string[]
+  advertisements?: {
+    advertisementId: string
+    sortOrder?: number
+  }[]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface UpdatePostDto extends Partial<CreatePostDto> {}
+export interface UpdatePostDto extends Partial<CreatePostDto> {
+  status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'
+}
 
 export interface PostFilters {
   search?: string
@@ -84,8 +91,9 @@ export interface CreateAdDto {
   linkUrl: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface UpdateAdDto extends Partial<CreateAdDto> {}
+export interface UpdateAdDto extends Partial<CreateAdDto> {
+  status?: 'ACTIVE' | 'INACTIVE'
+}
 
 export interface AdFilters {
   status?: 'ACTIVE' | 'INACTIVE'

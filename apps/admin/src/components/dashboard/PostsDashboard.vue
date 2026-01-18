@@ -63,6 +63,16 @@
                 {{ formatDate(row.publishedAt) }}
               </template>
             </ElTableColumn>
+            <ElTableColumn label="操作" width="150" fixed="right">
+              <template #default="{ row }">
+                <ElButton type="primary" size="small" text @click="handlePreview(row.id, row.slug)">
+                  预览
+                </ElButton>
+                <ElButton type="primary" size="small" text @click="handleEdit(row.id)">
+                  编辑
+                </ElButton>
+              </template>
+            </ElTableColumn>
           </ElTable>
           <ElEmpty v-else description="暂无数据" />
         </ElCard>
@@ -73,10 +83,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { Document, Check, Edit, View } from '@element-plus/icons-vue'
 import StatCard from './StatCard.vue'
 import TrendChart from './TrendChart.vue'
 import type { PostStats } from '@/api/dashboard'
+
+const router = useRouter()
+const WEB_URL = import.meta.env.VITE_WEB_URL || 'http://localhost:3004'
 
 interface Props {
   stats: PostStats | null
@@ -111,6 +125,17 @@ const formatDate = (dateStr: string | null) => {
     hour: '2-digit',
     minute: '2-digit',
   })
+}
+
+// 预览推文
+const handlePreview = (id: string, slug: string) => {
+  const url = `${WEB_URL}/post/${slug || id}`
+  window.open(url, '_blank')
+}
+
+// 编辑推文
+const handleEdit = (id: string) => {
+  router.push(`/posts/edit/${id}`)
 }
 </script>
 

@@ -45,6 +45,7 @@ const formData = ref<Partial<CreatePostDto>>({
   excerpt: '',
   coverImage: '',
   content: null,
+  advertisements: [],
 })
 
 // 是否为编辑模式
@@ -66,7 +67,11 @@ async function loadPost() {
       coverImage: post.coverImage,
       detailImage: post.detailImage,
       content: post.content,
-      advertisementIds: post.advertisements?.map((ad) => ad.id) || [],
+      advertisements:
+        post.advertisements?.map((item, index) => ({
+          advertisementId: item.advertisement.id,
+          sortOrder: index,
+        })) || [],
     }
   } catch {
     ElMessage.error('加载推文失败')
@@ -87,7 +92,7 @@ async function handleSaveDraft() {
 
   saving.value = true
   try {
-    const data = formData.value as CreatePostDto
+    const data = { ...formData.value, status: 'DRAFT' } as CreatePostDto & { status: 'DRAFT' }
 
     if (isEdit.value) {
       await postStore.update(postId.value, data)

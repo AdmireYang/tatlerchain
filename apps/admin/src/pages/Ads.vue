@@ -36,13 +36,19 @@
           <!-- 广告内容 -->
           <div class="ad-content">
             <div class="ad-header">
-              <div class="ad-title" :title="ad.title">{{ ad.title }}</div>
+              <div class="ad-title" :title="ad.title" @click="handlePreview(ad.linkUrl)">
+                {{ ad.title }}
+              </div>
               <div class="ad-meta">
                 <ElCheckbox
                   :model-value="ad.status === 'ACTIVE'"
                   @change="handleToggleStatus(ad.id, ad.status)"
-                  label="在前台展示"
+                  label="在官网展示"
                 />
+                <span class="ad-category">{{ ad.category }}</span>
+                <span class="ad-stats"
+                  >点击 {{ ad.clickCount }} · 展示 {{ ad.impressionCount }}</span
+                >
               </div>
             </div>
           </div>
@@ -50,9 +56,15 @@
           <!-- 操作按钮 -->
           <div class="ad-actions">
             <ElButton size="small" @click="handleEdit(ad.id)">编辑</ElButton>
-            <ElButton size="small" @click="handlePreview(ad.linkUrl)">预览</ElButton>
+            <ElButton size="small" @click="handlePreview(ad.linkUrl)">
+              <ElIcon><Link /></ElIcon>
+              预览
+            </ElButton>
+            <ElButton size="small" @click="handleCopyLink(ad.linkUrl)">
+              <ElIcon><Link /></ElIcon>
+              复制链接
+            </ElButton>
             <ElButton size="small" type="danger" @click="handleDelete(ad.id)">删除</ElButton>
-            <ElButton size="small" @click="handleCopyLink(ad.linkUrl)">复制链接</ElButton>
           </div>
         </div>
       </div>
@@ -77,7 +89,7 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Plus, Picture } from '@element-plus/icons-vue'
+import { Plus, Picture, Link } from '@element-plus/icons-vue'
 import { useAdStore } from '@/stores'
 import { useTable } from '@/composables'
 import { getAds } from '@/api'
@@ -112,7 +124,20 @@ async function handleCopyLink(url: string) {
     await navigator.clipboard.writeText(url)
     ElMessage.success('链接已复制到剪贴板')
   } catch {
-    ElMessage.error('复制失败，请手动复制')
+    // 降级方案：使用传统方法复制
+    const textarea = document.createElement('textarea')
+    textarea.value = url
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    try {
+      document.execCommand('copy')
+      ElMessage.success('链接已复制到剪贴板')
+    } catch {
+      ElMessage.error('复制失败，请手动复制')
+    }
+    document.body.removeChild(textarea)
   }
 }
 
@@ -120,12 +145,14 @@ async function handleCopyLink(url: string) {
 async function handleToggleStatus(id: string, currentStatus: string) {
   try {
     if (currentStatus === 'ACTIVE') {
-      // 当前是活跃状态，需要取消发布（暂时没有这个接口，可以先提示）
-      ElMessage.warning('取消发布功能待实现')
+      // 当前已激活，取消展示（改为未激活）
+      await adStore.update(id, { status: 'INACTIVE' })
+      ElMessage.success('已取消在官网展示')
+      fetchData()
     } else {
-      // 当前是未激活状态，发布
+      // 当前未激活，发布到前台
       await adStore.publish(id)
-      ElMessage.success('已发布到前台')
+      ElMessage.success('已发布到官网')
       fetchData()
     }
   } catch {
@@ -227,11 +254,26 @@ onMounted(() => {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          cursor: pointer;
+          transition: color 0.3s;
+
+          &:hover {
+            color: #409eff;
+          }
         }
 
         .ad-meta {
           display: flex;
           align-items: center;
+          gap: 8px;
+          font-size: 13px;
+          color: #909399;
+
+          .ad-category {
+            padding: 2px 8px;
+            background: #f0f2f5;
+            border-radius: 4px;
+          }
         }
       }
 

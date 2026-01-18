@@ -19,6 +19,7 @@ export class AdsController {
       pageSize: query.pageSize,
       status: query.status,
       category: query.category,
+      search: query.search,
     })
   }
 

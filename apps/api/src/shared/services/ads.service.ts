@@ -61,13 +61,20 @@ export class AdsService {
     pageSize?: number
     status?: AdStatus
     category?: string
+    search?: string
   }) {
-    const { page = 1, pageSize = 10, status, category } = options
+    const { page = 1, pageSize = 10, status, category, search } = options
     const skip = (page - 1) * pageSize
 
     const where: Prisma.AdvertisementWhereInput = {
       ...(status && { status }),
       ...(category && { category }),
+      ...(search && {
+        title: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      }),
     }
 
     const [ads, total] = await Promise.all([

@@ -24,13 +24,12 @@
 
       <!-- 分类 -->
       <ElFormItem label="分类" prop="category">
-        <ElSelect v-model="formData.category" placeholder="请选择分类" style="width: 100%">
-          <ElOption label="科技" value="Technology" />
-          <ElOption label="设计" value="Design" />
-          <ElOption label="商业" value="Business" />
-          <ElOption label="生活" value="Lifestyle" />
-          <ElOption label="文化" value="Culture" />
-        </ElSelect>
+        <ElInput
+          v-model="formData.category"
+          placeholder="请输入分类"
+          maxlength="20"
+          show-word-limit
+        />
       </ElFormItem>
 
       <!-- 摘要 -->
@@ -81,48 +80,32 @@
           <div class="ad-header">
             <ElButton type="primary" size="small" @click="showAdSelector">
               <ElIcon><Plus /></ElIcon>
-              添加广告
+              {{ selectedAd ? '更换广告' : '选择广告' }}
             </ElButton>
-            <span class="ad-count">已选择 {{ selectedAds.length }} 个广告</span>
           </div>
 
-          <!-- 广告列表 -->
-          <div v-if="selectedAds.length > 0" class="ad-list">
-            <Draggable
-              v-model="selectedAds"
-              item-key="id"
-              handle=".drag-handle"
-              @end="handleDragEnd"
-            >
-              <template #item="{ element: ad }">
-                <div class="ad-item">
-                  <div class="drag-handle">
-                    <ElIcon><Rank /></ElIcon>
+          <!-- 广告展示 -->
+          <div v-if="selectedAd" class="ad-display">
+            <div class="ad-item">
+              <ElImage :src="selectedAd.imageUrl" fit="cover" class="ad-image">
+                <template #error>
+                  <div class="image-error">
+                    <ElIcon><Picture /></ElIcon>
                   </div>
-                  <ElImage :src="ad.imageUrl" fit="cover" class="ad-image">
-                    <template #error>
-                      <div class="image-error">
-                        <ElIcon><Picture /></ElIcon>
-                      </div>
-                    </template>
-                  </ElImage>
-                  <div class="ad-info">
-                    <div class="ad-title">{{ ad.title }}</div>
-                    <div class="ad-meta">
-                      <ElTag size="small" type="info">{{ ad.category }}</ElTag>
-                    </div>
-                  </div>
-                  <ElButton type="danger" size="small" text @click="removeAd(ad.id)">
-                    <ElIcon><Delete /></ElIcon>
-                    移除
-                  </ElButton>
+                </template>
+              </ElImage>
+              <div class="ad-info">
+                <div class="ad-title">{{ selectedAd.title }}</div>
+                <div class="ad-meta">
+                  <ElTag size="small" type="info">{{ selectedAd.category }}</ElTag>
                 </div>
-              </template>
-            </Draggable>
+              </div>
+              <ElButton type="danger" size="small" text @click="removeAd">
+                <ElIcon><Delete /></ElIcon>
+                移除
+              </ElButton>
+            </div>
           </div>
-
-          <!-- 空状态 -->
-          <ElEmpty v-else description="暂未关联广告" :image-size="80" />
         </div>
       </ElFormItem>
     </ElForm>
@@ -130,7 +113,8 @@
     <!-- 广告选择对话框 -->
     <AdSelector
       v-model:visible="adSelectorVisible"
-      :selected-ids="selectedAds.map((ad) => ad.id)"
+      :selected-ids="selectedAd ? [selectedAd.id] : []"
+      :single-select="true"
       @confirm="handleAdSelect"
     />
   </div>
@@ -140,12 +124,11 @@
 import { ref, reactive, watch } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { Plus, Rank, Picture, Delete } from '@element-plus/icons-vue'
+import { Plus, Picture, Delete } from '@element-plus/icons-vue'
 import type { CreatePostDto, Advertisement } from '@/types/api'
 import RichTextEditor from '@/components/common/RichTextEditor.vue'
 import ImageUpload from '@/components/common/ImageUpload.vue'
 import AdSelector from './AdSelector.vue'
-import Draggable from 'vuedraggable'
 import { getAdById } from '@/api/ad'
 
 // Props
@@ -174,6 +157,7 @@ const formData = reactive<Partial<CreatePostDto>>({
   coverImage: '',
   detailImage: undefined,
   content: null,
+  advertisements: [],
   ...props.modelValue,
 })
 
@@ -184,10 +168,11 @@ const detailImageLink = ref(props.modelValue.detailImage?.authorLink || '')
 
 // 广告相关
 const adSelectorVisible = ref(false)
-const selectedAds = ref<Advertisement[]>([])
+const selectedAd = ref<Advertisement | null>(null)
 
 // 防止递归更新的标志
 const isUpdatingFromProps = ref(false)
+const isLoadingAds = ref(false)
 
 // 监听 props.modelValue 的变化，更新表单数据
 watch(
@@ -212,16 +197,23 @@ watch(
   { deep: true }
 )
 
-// 监听 props.modelValue.advertisementIds 的变化，初始化广告列表
+// 监听 props.modelValue.advertisements 的变化，初始化广告
 watch(
-  () => props.modelValue.advertisementIds,
-  (newIds) => {
-    // 过滤掉无效的 ID
-    const validIds = newIds?.filter((id) => id && id !== 'undefined') || []
-    if (validIds.length > 0) {
-      loadAdvertisements(validIds)
+  () => props.modelValue.advertisements,
+  (newAds, oldAds) => {
+    // 如果正在加载广告，跳过
+    if (isLoadingAds.value) return
+
+    // 比较新旧 ID，如果相同则跳过
+    const newId = newAds?.[0]?.advertisementId
+    const oldId = oldAds?.[0]?.advertisementId
+    if (newId === oldId) return
+
+    // 加载广告详情
+    if (newId && newId !== 'undefined') {
+      loadAdvertisement(newId)
     } else {
-      selectedAds.value = []
+      selectedAd.value = null
     }
   },
   { immediate: true }
@@ -234,7 +226,10 @@ const rules: FormRules = {
     { max: 50, message: '标题不能超过50个字符', trigger: 'blur' },
   ],
   slug: [{ required: true, message: '请输入 URL slug', trigger: 'blur' }],
-  category: [{ required: true, message: '请选择分类', trigger: 'change' }],
+  category: [
+    { required: true, message: '请输入分类', trigger: 'blur' },
+    { max: 20, message: '分类不能超过20个字符', trigger: 'blur' },
+  ],
   excerpt: [{ required: true, message: '请输入摘要', trigger: 'blur' }],
   coverImage: [{ required: true, message: '请上传封面图', trigger: 'change' }],
 }
@@ -280,11 +275,14 @@ watch([detailImageUrl, detailImageAuthor, detailImageLink], () => {
   }
 })
 
-// 监听广告列表变化，更新 advertisementIds
+// 监听广告变化，更新 advertisements
 watch(
-  selectedAds,
-  (newAds) => {
-    formData.advertisementIds = newAds.map((ad) => ad.id)
+  selectedAd,
+  (newAd) => {
+    // 如果正在加载广告，不要更新 formData
+    if (isLoadingAds.value) return
+
+    formData.advertisements = newAd ? [{ advertisementId: newAd.id, sortOrder: 0 }] : []
   },
   { deep: true }
 )
@@ -292,21 +290,24 @@ watch(
 /**
  * 加载广告详情
  */
-async function loadAdvertisements(adIds: string[]) {
-  // 过滤掉无效的 ID
-  const validIds = adIds.filter((id) => id && id !== 'undefined')
-  if (validIds.length === 0) {
-    selectedAds.value = []
-    return
-  }
+async function loadAdvertisement(adId: string) {
+  // 设置加载标志，防止循环更新
+  isLoadingAds.value = true
 
   try {
-    const promises = validIds.map((id) => getAdById(id))
-    const responses = await Promise.all(promises)
-    selectedAds.value = responses.map((res) => res.data.data)
+    const response = await getAdById(adId)
+    selectedAd.value = response.data.data
+
+    // 加载完成后立即更新 formData
+    formData.advertisements = [{ advertisementId: response.data.data.id, sortOrder: 0 }]
   } catch (error) {
     console.error('加载广告详情失败:', error)
     ElMessage.error('加载广告详情失败')
+  } finally {
+    // 延迟重置标志，确保所有 watch 都已执行完毕
+    setTimeout(() => {
+      isLoadingAds.value = false
+    }, 100)
   }
 }
 
@@ -322,9 +323,12 @@ function showAdSelector() {
  */
 async function handleAdSelect(adIds: string[]) {
   try {
-    // 加载新选择的广告详情
-    await loadAdvertisements(adIds)
-    ElMessage.success('广告选择成功')
+    // 只取第一个广告 ID
+    const adId = adIds[0]
+    if (adId) {
+      await loadAdvertisement(adId)
+      ElMessage.success('广告选择成功')
+    }
   } catch (error) {
     console.error('加载广告失败:', error)
     ElMessage.error('加载广告失败')
@@ -334,21 +338,10 @@ async function handleAdSelect(adIds: string[]) {
 /**
  * 移除广告
  */
-function removeAd(adId: string) {
-  const index = selectedAds.value.findIndex((ad) => ad.id === adId)
-  if (index > -1) {
-    selectedAds.value.splice(index, 1)
-    ElMessage.success('广告已移除')
-  }
-}
-
-/**
- * 处理拖拽结束
- */
-function handleDragEnd() {
-  // 拖拽结束后，selectedAds 的顺序已经更新
-  // watch 会自动更新 formData.advertisementIds
-  ElMessage.success('广告排序已更新')
+function removeAd() {
+  selectedAd.value = null
+  formData.advertisements = []
+  ElMessage.success('广告已移除')
 }
 
 // 验证表单
@@ -391,6 +384,13 @@ defineExpose({
   color: #606266;
 }
 
+.ad-display {
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  padding: 12px;
+  background-color: #fafafa;
+}
+
 .ad-list {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
@@ -406,27 +406,10 @@ defineExpose({
   background-color: #fff;
   border: 1px solid #ebeef5;
   border-radius: 4px;
-  margin-bottom: 12px;
   transition: all 0.3s;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.drag-handle {
-  cursor: move;
-  color: #909399;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    color: #409eff;
   }
 }
 
