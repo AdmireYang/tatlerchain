@@ -46,9 +46,7 @@
                   label="在官网展示"
                 />
                 <span class="ad-category">{{ ad.category }}</span>
-                <span class="ad-stats"
-                  >点击 {{ ad.clickCount }} · 展示 {{ ad.impressionCount }}</span
-                >
+                <span class="ad-stats">点击 {{ ad.clickCount }}</span>
               </div>
             </div>
           </div>

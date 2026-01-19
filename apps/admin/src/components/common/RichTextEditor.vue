@@ -192,7 +192,8 @@ const editor = useEditor({
   content: getInitialContent(props.modelValue),
   editable: props.editable,
   onUpdate: ({ editor }) => {
-    emit('update:modelValue', editor.getJSON())
+    // 始终输出 HTML 格式，而不是 JSON 配置格式
+    emit('update:modelValue', editor.getHTML())
   },
 })
 
@@ -208,13 +209,16 @@ function getInitialContent(value: any) {
     return '<p></p>'
   }
 
-  // 如果是字符串，直接返回
+  // 如果是字符串（HTML），直接返回
   if (typeof value === 'string') {
     return value || '<p></p>'
   }
 
-  // 如果是有效的 Tiptap JSON 对象
+  // 如果是有效的 Tiptap JSON 对象（兼容旧数据），Tiptap 会自动处理
+  // 但我们会确保输出始终是 HTML 格式
   if (typeof value === 'object' && value.type) {
+    // Tiptap 的 setContent 可以接受 JSON，但我们需要确保输出是 HTML
+    // 这里先返回 JSON，编辑器初始化后会自动处理
     return value
   }
 
@@ -226,12 +230,30 @@ function getInitialContent(value: any) {
 watch(
   () => props.modelValue,
   (value) => {
-    if (editor.value && value) {
-      const currentContent = editor.value.getJSON()
-      const isSame = JSON.stringify(currentContent) === JSON.stringify(value)
-      if (!isSame) {
-        editor.value.commands.setContent(value)
+    if (editor.value && value != null) {
+      const currentContent = editor.value.getHTML()
+      // 对于字符串（HTML）直接比较
+      if (typeof value === 'string') {
+        if (currentContent !== value) {
+          editor.value.commands.setContent(value)
+          // setContent 会触发 onUpdate，自动输出 HTML 格式
+        }
+      } else if (typeof value === 'object') {
+        // 如果是 JSON 对象（兼容旧数据），转换为 HTML
+        const currentJson = editor.value.getJSON()
+        const isSame = JSON.stringify(currentJson) === JSON.stringify(value)
+        if (!isSame) {
+          // 设置 JSON 内容，Tiptap 会自动处理并触发 onUpdate
+          // onUpdate 会将 JSON 转换为 HTML 并输出
+          editor.value.commands.setContent(value)
+        }
+      } else {
+        // 其他情况设置为空
+        editor.value.commands.setContent('<p></p>')
       }
+    } else if (editor.value && value == null) {
+      // 如果值为 null，清空编辑器
+      editor.value.commands.setContent('<p></p>')
     }
   }
 )

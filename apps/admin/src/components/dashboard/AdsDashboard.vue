@@ -2,7 +2,7 @@
   <div class="ads-dashboard">
     <!-- 统计卡片 -->
     <ElRow :gutter="16" class="mb-4">
-      <ElCol :xs="24" :sm="12" :md="6">
+      <ElCol :xs="24" :sm="12" :md="8">
         <StatCard
           title="广告总数"
           :value="stats?.total || 0"
@@ -10,23 +10,15 @@
           color="#409eff"
         />
       </ElCol>
-      <ElCol :xs="24" :sm="12" :md="6">
+      <ElCol :xs="24" :sm="12" :md="8">
         <StatCard title="活跃广告" :value="stats?.active || 0" :icon="Check" color="#67c23a" />
       </ElCol>
-      <ElCol :xs="24" :sm="12" :md="6">
+      <ElCol :xs="24" :sm="12" :md="8">
         <StatCard
           title="总点击次数"
           :value="stats?.totalClicks || 0"
           :icon="Mouse"
           color="#e6a23c"
-        />
-      </ElCol>
-      <ElCol :xs="24" :sm="12" :md="6">
-        <StatCard
-          title="总展示次数"
-          :value="stats?.totalImpressions || 0"
-          :icon="View"
-          color="#f56c6c"
         />
       </ElCol>
     </ElRow>
@@ -46,16 +38,6 @@
             <ElTableColumn prop="clickCount" label="点击次数" width="120" align="right">
               <template #default="{ row }">
                 {{ row.clickCount.toLocaleString() }}
-              </template>
-            </ElTableColumn>
-            <ElTableColumn prop="impressionCount" label="展示次数" width="120" align="right">
-              <template #default="{ row }">
-                {{ row.impressionCount.toLocaleString() }}
-              </template>
-            </ElTableColumn>
-            <ElTableColumn prop="ctr" label="点击率" width="100" align="right">
-              <template #default="{ row }">
-                <ElTag type="success">{{ row.ctr }}%</ElTag>
               </template>
             </ElTableColumn>
             <ElTableColumn prop="publishedAt" label="发布时间" width="180">

@@ -92,16 +92,16 @@
                 </a>
               </div>
             </div>
-
-            <div class="meta-item">
-              <span class="meta-label">创作者</span>
-              <span class="meta-value meta-author">{{ post.author?.name }}</span>
-            </div>
           </div>
 
           <!-- 左侧广告位 -->
           <div v-if="sidebarAd" class="sidebar-promo">
-            <a :href="sidebarAd.linkUrl" target="_blank" rel="noopener">
+            <a
+              :href="sidebarAd.linkUrl"
+              target="_blank"
+              rel="noopener"
+              @click="recordClick(sidebarAd.id)"
+            >
               <img :src="sidebarAd.imageUrl" :alt="sidebarAd.title" />
             </a>
           </div>
@@ -168,6 +168,7 @@ import type { Advertisement } from '~/types/api'
 
 const route = useRoute()
 const postApi = usePostsApi()
+const adsApi = useAdsApi()
 
 // 获取文章详情
 const slug = computed(() => route.params.slug as string)
@@ -225,6 +226,11 @@ function formatDate(dateStr?: string): string {
     month: 'long',
     day: 'numeric',
   })
+}
+
+// 记录广告点击
+function recordClick(id: string) {
+  adsApi.recordClick(id)
 }
 
 // 打开分享小窗口

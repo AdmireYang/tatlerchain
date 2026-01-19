@@ -43,7 +43,7 @@ export interface Post {
 export interface CreatePostDto {
   title: string
   slug: string
-  content: any
+  content: string // HTML 格式的富文本内容
   excerpt: string
   category: string
   coverImage: string

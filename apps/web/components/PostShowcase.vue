@@ -77,6 +77,7 @@ const firstAd = computed(() => {
 .showcase-image {
   position: relative;
   overflow: hidden;
+  max-height: 400px;
 
   a {
     display: block;

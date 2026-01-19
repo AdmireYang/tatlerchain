@@ -213,7 +213,7 @@ export class AdsService {
     const topAds = await this.prisma.advertisement.findMany({
       where: {
         status: AdStatus.ACTIVE,
-        impressionCount: {
+        clickCount: {
           gt: 0,
         },
       },
@@ -227,6 +227,7 @@ export class AdsService {
         clickCount: true,
         impressionCount: true,
         publishedAt: true,
+        linkUrl: true,
       },
     })
 

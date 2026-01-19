@@ -156,7 +156,7 @@ const formData = reactive<Partial<CreatePostDto>>({
   excerpt: '',
   coverImage: '',
   detailImage: undefined,
-  content: null,
+  content: '',
   advertisements: [],
   ...props.modelValue,
 })
