@@ -24,12 +24,18 @@
 
       <!-- 分类 -->
       <ElFormItem label="分类" prop="category">
-        <ElInput
+        <ElSelect
           v-model="formData.category"
-          placeholder="请输入分类"
-          maxlength="20"
-          show-word-limit
-        />
+          placeholder="请选择分类"
+          style="width: 100%"
+          clearable
+        >
+          <ElOption label="博物" value="博物" />
+          <ElOption label="人物" value="人物" />
+          <ElOption label="评弹" value="评弹" />
+          <ElOption label="影集" value="影集" />
+          <ElOption label="刊中刊" value="刊中刊" />
+        </ElSelect>
       </ElFormItem>
 
       <!-- 摘要 -->
@@ -226,10 +232,7 @@ const rules: FormRules = {
     { max: 50, message: '标题不能超过50个字符', trigger: 'blur' },
   ],
   slug: [{ required: true, message: '请输入 URL slug', trigger: 'blur' }],
-  category: [
-    { required: true, message: '请输入分类', trigger: 'blur' },
-    { max: 20, message: '分类不能超过20个字符', trigger: 'blur' },
-  ],
+  category: [{ required: true, message: '请选择分类', trigger: 'change' }],
   excerpt: [{ required: true, message: '请输入摘要', trigger: 'blur' }],
   coverImage: [{ required: true, message: '请上传封面图', trigger: 'change' }],
 }

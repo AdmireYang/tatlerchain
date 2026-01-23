@@ -45,7 +45,6 @@
                   @change="handleToggleStatus(ad.id, ad.status)"
                   label="在官网展示"
                 />
-                <span class="ad-category">{{ ad.category }}</span>
                 <span class="ad-stats">点击 {{ ad.clickCount }}</span>
               </div>
             </div>
@@ -266,12 +265,6 @@ onMounted(() => {
           gap: 8px;
           font-size: 13px;
           color: #909399;
-
-          .ad-category {
-            padding: 2px 8px;
-            background: #f0f2f5;
-            border-radius: 4px;
-          }
         }
       }
 

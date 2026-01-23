@@ -10,11 +10,6 @@
       />
     </ElFormItem>
 
-    <!-- 分类 -->
-    <ElFormItem label="分类" prop="category">
-      <ElInput v-model="formData.category" placeholder="请输入广告分类" />
-    </ElFormItem>
-
     <!-- 广告图片 -->
     <ElFormItem label="广告图片" prop="imageUrl">
       <ImageUpload v-model="formData.imageUrl" />
@@ -53,7 +48,6 @@ const formRef = ref<FormInstance>()
 // 表单数据
 const formData = reactive<Partial<CreateAdDto>>({
   title: '',
-  category: '',
   imageUrl: '',
   linkUrl: '',
   ...props.modelValue,
@@ -66,7 +60,6 @@ watch(
     if (newValue) {
       Object.assign(formData, {
         title: newValue.title || '',
-        category: newValue.category || '',
         imageUrl: newValue.imageUrl || '',
         linkUrl: newValue.linkUrl || '',
       })
@@ -81,7 +74,6 @@ const rules: FormRules = {
     { required: true, message: '请输入广告标题', trigger: 'blur' },
     { max: 50, message: '标题不能超过50个字符', trigger: 'blur' },
   ],
-  category: [{ required: true, message: '请输入广告分类', trigger: 'blur' }],
   imageUrl: [{ required: true, message: '请上传广告图片', trigger: 'change' }],
   linkUrl: [
     { required: true, message: '请输入链接地址', trigger: 'blur' },

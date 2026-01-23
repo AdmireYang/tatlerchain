@@ -39,7 +39,6 @@
               <div class="ad-info">
                 <div class="ad-title">{{ ad.title }}</div>
                 <div class="ad-meta">
-                  <ElTag size="small" type="info">{{ ad.category }}</ElTag>
                   <ElTag size="small" :type="ad.status === 'ACTIVE' ? 'success' : 'info'">
                     {{ ad.status === 'ACTIVE' ? '已发布' : '未发布' }}
                   </ElTag>
@@ -70,7 +69,6 @@
               <div class="ad-info">
                 <div class="ad-title">{{ ad.title }}</div>
                 <div class="ad-meta">
-                  <ElTag size="small" type="info">{{ ad.category }}</ElTag>
                   <ElTag size="small" :type="ad.status === 'ACTIVE' ? 'success' : 'info'">
                     {{ ad.status === 'ACTIVE' ? '已发布' : '未发布' }}
                   </ElTag>
