@@ -39,6 +39,9 @@ COPY apps/api ./apps/api
 
 # 注意：不复制 .env 文件，生产环境通过 docker-compose 传入环境变量
 
+# 重新安装以确保 workspace 包正确链接
+RUN pnpm install
+
 # 构建 API（Webpack 会打包除 Prisma 外的所有依赖）
 RUN pnpm --filter @port/api build
 

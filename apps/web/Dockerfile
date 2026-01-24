@@ -36,7 +36,10 @@ RUN pnpm install
 COPY packages ./packages
 COPY apps/web ./apps/web
 
-# 构建 Web
+# 重新安装以确保 workspace 包正确链接
+RUN pnpm install
+
+# 构建 Web（包含依赖的 workspace 包）
 RUN pnpm --filter @port/web build
 
 # =====================
