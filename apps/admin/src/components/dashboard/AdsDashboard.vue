@@ -65,7 +65,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { PictureFilled, Check, Mouse, View } from '@element-plus/icons-vue'
+import { PictureFilled, Check, Mouse } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import StatCard from './StatCard.vue'
 import type { AdStats } from '@/api/dashboard'
@@ -76,7 +76,7 @@ interface Props {
   stats: AdStats | null
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 // 格式化日期
 const formatDate = (dateStr: string | null) => {

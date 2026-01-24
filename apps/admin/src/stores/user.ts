@@ -28,7 +28,9 @@ export const useUserStore = defineStore('user', () => {
     loading.value = true
     try {
       const response = await getUsers(params)
-      users.value = response.data.data
+      // response.data is likely PaginatedResponse<User>
+      // to fix the type error, set users.value to the inner .data array, which should be User[]
+      users.value = Array.isArray(response.data.data) ? response.data.data : []
       return response.data
     } finally {
       loading.value = false

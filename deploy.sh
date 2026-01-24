@@ -438,7 +438,10 @@ deploy_admin() {
 # 同步 Admin 构建产物（本地构建后上传）
 # ============================================
 sync_admin_dist() {
-    check_root "admin-sync"
+    # 如果是从命令行直接调用，检查 root 权限
+    if [ "${SKIP_ROOT_CHECK:-}" != "true" ]; then
+        check_root "admin-sync"
+    fi
     cd $APP_DIR
     
     local ADMIN_DIST="$APP_DIR/apps/admin/dist"
@@ -448,16 +451,16 @@ sync_admin_dist() {
     
     # 检查构建产物是否存在
     if [ ! -d "$ADMIN_DIST" ]; then
-        log_error "Admin 构建产物不存在: $ADMIN_DIST"
+        log_warn "Admin 构建产物不存在: $ADMIN_DIST"
         log_info "请先在本地执行: pnpm --filter @port/admin build"
-        log_info "然后使用 rsync/scp 上传到服务器"
-        exit 1
+        log_info "然后提交到 Git 并重新部署"
+        return 0
     fi
     
     # 检查是否有 index.html（确认是有效的构建产物）
     if [ ! -f "$ADMIN_DIST/index.html" ]; then
-        log_error "构建产物无效，缺少 index.html"
-        exit 1
+        log_warn "构建产物无效，缺少 index.html，跳过 Admin 同步"
+        return 0
     fi
     
     # 创建目标目录
@@ -622,8 +625,8 @@ update_deploy() {
     # 重新构建并启动
     build_and_start
 
-    # 构建 Admin
-    # build_admin
+    # 同步 Admin 静态文件（本地构建后提交到 Git）
+    SKIP_ROOT_CHECK=true sync_admin_dist
 
     # 健康检查
     health_check
