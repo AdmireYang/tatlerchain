@@ -47,6 +47,13 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       API_BASE_URL: ${API_BASE_URL}
       UPLOAD_DIR: /app/uploads
+      # OSS 配置
+      UPLOAD_STORAGE: ${UPLOAD_STORAGE:-local}
+      OSS_REGION: ${OSS_REGION:-}
+      OSS_ACCESS_KEY_ID: ${OSS_ACCESS_KEY_ID:-}
+      OSS_ACCESS_KEY_SECRET: ${OSS_ACCESS_KEY_SECRET:-}
+      OSS_BUCKET: ${OSS_BUCKET:-}
+      OSS_CDN_DOMAIN: ${OSS_CDN_DOMAIN:-}
     ports:
       - '127.0.0.1:${API_PORT:-3001}:${API_PORT:-3001}' # 仅本地访问，通过 Nginx 代理
     volumes:
