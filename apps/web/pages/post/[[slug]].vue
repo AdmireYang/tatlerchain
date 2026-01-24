@@ -93,7 +93,7 @@
           <section class="post-detail-section">
             <!-- 图片作者信息 -->
             <div v-if="post.detailImage?.authorName" class="image-credit">
-              <span>Photography </span>
+              <span>摄影 </span>
               <a
                 v-if="post.detailImage.authorLink"
                 :href="post.detailImage.authorLink"
@@ -122,7 +122,7 @@
       <!-- 相关文章 -->
       <section v-if="relatedPosts?.length" class="related-articles">
         <div class="related-container">
-          <h2 class="related-title">RELATED ARTICLES</h2>
+          <h2 class="related-title">相关文章</h2>
 
           <div class="related-grid">
             <article v-for="relatedPost in relatedPosts" :key="relatedPost.id" class="related-card">
@@ -482,7 +482,6 @@ async function shareToXiaohongshu() {
   font-size: 12px;
   color: #666;
   margin-bottom: 12px;
-  font-style: italic;
 
   a {
     color: #c45c4a;

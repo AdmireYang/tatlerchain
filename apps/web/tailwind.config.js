@@ -17,9 +17,11 @@ export default {
         dark: '#1D1D1D',
         light: '#F8F8F8',
       },
-      // 字体配置 - 全站统一使用 Playfair Display
+      // 字体配置
+      // Port 用于英文（通过 unicode-range 限制）
+      // FZ 用于中文（通过 unicode-range 限制）
       fontFamily: {
-        sans: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ['Port', 'FZ'],
       },
       // 字体大小
       fontSize: {

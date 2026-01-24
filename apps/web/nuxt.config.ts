@@ -46,16 +46,16 @@ export default defineNuxtConfig({
         // 预加载本地字体文件（减少闪烁）
         {
           rel: 'preload',
-          href: '/fonts/PlayfairDisplay-Regular.woff2',
+          href: '/fonts/Port.otf',
           as: 'font',
-          type: 'font/woff2',
+          type: 'font/otf',
           crossorigin: '',
         },
         {
           rel: 'preload',
-          href: '/fonts/PlayfairDisplay-Medium.woff2',
+          href: '/fonts/Fz.ttf',
           as: 'font',
-          type: 'font/woff2',
+          type: 'font/ttf',
           crossorigin: '',
         },
       ],

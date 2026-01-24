@@ -1,33 +1,77 @@
-/* 本地字体定义 - Playfair Display */
+/* 本地字体定义 */
+
+/* Port 字体 - 仅用于英文/拉丁字符 */
 @font-face {
-  font-family: 'Playfair Display';
+  font-family: 'Port';
   font-style: normal;
   font-weight: 400;
-  font-display: block;
-  src: url('/fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+  font-display: swap;
+  src: url('/fonts/Port.otf') format('opentype');
+  /* 只匹配拉丁字母、数字、标点符号 */
+  unicode-range: U+0000-007F, U+0080-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F;
 }
 
 @font-face {
-  font-family: 'Playfair Display';
+  font-family: 'Port';
   font-style: normal;
   font-weight: 500;
-  font-display: block;
-  src: url('/fonts/PlayfairDisplay-Medium.woff2') format('woff2');
+  font-display: swap;
+  src: url('/fonts/Port.otf') format('opentype');
+  unicode-range: U+0000-007F, U+0080-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F;
 }
 
-/* 600 和 700 使用 500 作为后备 */
 @font-face {
-  font-family: 'Playfair Display';
+  font-family: 'Port';
   font-style: normal;
   font-weight: 600;
-  font-display: block;
-  src: url('/fonts/PlayfairDisplay-Medium.woff2') format('woff2');
+  font-display: swap;
+  src: url('/fonts/Port.otf') format('opentype');
+  unicode-range: U+0000-007F, U+0080-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F;
 }
 
 @font-face {
-  font-family: 'Playfair Display';
+  font-family: 'Port';
   font-style: normal;
   font-weight: 700;
-  font-display: block;
-  src: url('/fonts/PlayfairDisplay-Medium.woff2') format('woff2');
+  font-display: swap;
+  src: url('/fonts/Port.otf') format('opentype');
+  unicode-range: U+0000-007F, U+0080-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F;
+}
+
+/* 方正字体 - 用于中文及其他字符 */
+@font-face {
+  font-family: 'FZ';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/Fz.woff') format('woff');
+  /* 匹配中文及其他非拉丁字符 */
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF, U+FE10-FE1F, U+FE30-FE4F;
+}
+
+@font-face {
+  font-family: 'FZ';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/Fz.woff') format('woff');
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF, U+FE10-FE1F, U+FE30-FE4F;
+}
+
+@font-face {
+  font-family: 'FZ';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/Fz.woff') format('woff');
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF, U+FE10-FE1F, U+FE30-FE4F;
+}
+
+@font-face {
+  font-family: 'FZ';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/Fz.woff') format('woff');
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF, U+FE10-FE1F, U+FE30-FE4F;
 }

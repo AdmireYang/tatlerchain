@@ -13,7 +13,7 @@
       <section v-if="hasMore" class="load-more-section">
         <button class="load-more-btn" :disabled="loading" @click="loadMore">
           <LoadingSpinner v-if="loading" size="small" />
-          <span v-else>SHOW ME MORE</span>
+          <span v-else>查看更多</span>
         </button>
       </section>
     </template>

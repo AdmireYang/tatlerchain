@@ -163,6 +163,5 @@ const firstAd = computed(() => {
   font-size: 14px;
   line-height: 1.7;
   color: #4a4a4a;
-  font-style: italic;
 }
 </style>

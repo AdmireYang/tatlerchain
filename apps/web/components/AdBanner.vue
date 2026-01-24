@@ -11,7 +11,7 @@
         <div class="promo-content">
           <!-- <span v-if="item.category" class="promo-category">{{ item.category }}</span> -->
           <h3 class="promo-title">{{ item.title }}</h3>
-          <button class="promo-button">SEE MORE</button>
+          <button class="promo-button">查看更多</button>
         </div>
       </div>
     </a>
