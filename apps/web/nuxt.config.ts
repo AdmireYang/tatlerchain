@@ -43,6 +43,8 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Port Magazine - 内容管理系统' },
       ],
       link: [
+        // Favicon
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         // 预加载本地字体文件（减少闪烁）
         {
           rel: 'preload',
