@@ -435,7 +435,7 @@ deploy_admin() {
 }
 
 # ============================================
-# 同步 Admin 构建产物（本地构建后上传）
+# 同步 Admin 构建产物（本地构建后上传，运行在 Docker 容器中）
 # ============================================
 sync_admin_dist() {
     # 如果是从命令行直接调用，检查 root 权限
@@ -445,7 +445,6 @@ sync_admin_dist() {
     cd $APP_DIR
     
     local ADMIN_DIST="$APP_DIR/apps/admin/dist"
-    local NGINX_ADMIN_DIR="/var/www/tatlerchain/admin"
     
     log_step "同步 Admin 构建产物..."
     
@@ -463,25 +462,27 @@ sync_admin_dist() {
         return 0
     fi
     
-    # 创建目标目录
-    mkdir -p "$NGINX_ADMIN_DIR"
-    
-    # 复制构建产物
-    log_info "复制构建产物到 Nginx 目录..."
-    rm -rf "$NGINX_ADMIN_DIR"/*
-    cp -r "$ADMIN_DIST"/* "$NGINX_ADMIN_DIR/"
-    
-    # 设置权限
-    chown -R www-data:www-data "$NGINX_ADMIN_DIR" 2>/dev/null || true
-    chmod -R 755 "$NGINX_ADMIN_DIR"
-    
-    # 重载 Nginx
-    log_info "重载 Nginx..."
-    nginx -t && systemctl reload nginx
-    
     load_env
-    log_info "🎉 Admin 同步完成！"
-    log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
+    
+    # 构建 Admin Docker 镜像（使用 Dockerfile.runtime，只复制 dist）
+    log_info "构建 Admin Docker 镜像..."
+    docker-compose -f docker-compose.prod.yml build admin
+    
+    # 启动/重启 Admin 容器
+    log_info "启动 Admin 容器..."
+    docker-compose -f docker-compose.prod.yml up -d admin
+    
+    # 等待容器启动
+    sleep 2
+    
+    # 检查状态
+    if docker-compose -f docker-compose.prod.yml ps admin | grep -q "Up"; then
+        log_info "🎉 Admin 部署完成！"
+        log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
+    else
+        log_error "Admin 容器启动失败"
+        docker-compose -f docker-compose.prod.yml logs --tail=20 admin
+    fi
 }
 
 # ============================================
