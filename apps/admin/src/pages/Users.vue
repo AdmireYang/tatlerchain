@@ -28,8 +28,14 @@
     <!-- 用户列表 -->
     <ElCard class="list-card" shadow="never">
       <ElTable v-loading="loading" :data="data" stripe>
-        <ElTableColumn prop="email" label="账号" min-width="150" />
+        <ElTableColumn prop="email" label="邮箱" min-width="180" />
         <ElTableColumn prop="name" label="用户名" min-width="120" />
+        <ElTableColumn prop="displayPassword" label="初始密码" width="150">
+          <template #default="{ row }">
+            <span v-if="row.displayPassword" class="password-text">{{ row.displayPassword }}</span>
+            <span v-else class="password-empty">已修改</span>
+          </template>
+        </ElTableColumn>
         <ElTableColumn prop="role" label="角色" width="100">
           <template #default="{ row }">
             <ElTag v-if="row.role === 'ADMIN'" type="danger">管理员</ElTag>
@@ -160,14 +166,8 @@ const formData = reactive({
 // 表单验证规则
 const rules: FormRules = {
   email: [
-    { required: true, message: '请输入账号', trigger: 'blur' },
-    { min: 3, message: '账号长度至少3位', trigger: 'blur' },
-    { max: 50, message: '账号长度不能超过50位', trigger: 'blur' },
-    {
-      pattern: /^[a-zA-Z0-9_-]+$/,
-      message: '账号只能包含字母、数字、下划线和横线',
-      trigger: 'blur',
-    },
+    { required: true, message: '请输入邮箱', trigger: 'blur' },
+    { type: 'email', message: '请输入有效的邮箱地址', trigger: 'blur' },
   ],
   name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [
@@ -224,7 +224,7 @@ const handleEdit = (user: User) => {
   formData.id = user.id
   formData.name = user.name
   formData.email = user.email
-  formData.password = '******' // 显示占位符，表示已有密码
+  formData.password = user.displayPassword
   formData.role = user.role
   dialogVisible.value = true
 }
@@ -328,6 +328,19 @@ onMounted(() => {
       margin-top: 20px;
       display: flex;
       justify-content: flex-end;
+    }
+
+    .password-text {
+      font-family: 'Courier New', monospace;
+      background-color: #f5f7fa;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .password-empty {
+      color: #909399;
+      font-size: 12px;
     }
   }
 }

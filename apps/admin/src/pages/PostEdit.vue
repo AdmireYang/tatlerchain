@@ -44,7 +44,7 @@ const formData = ref<Partial<CreatePostDto>>({
   category: '',
   excerpt: '',
   coverImage: '',
-  content: null,
+  content: '',
   advertisements: [],
 })
 

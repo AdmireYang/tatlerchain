@@ -2,6 +2,10 @@
  * API 类型定义
  */
 
+// 从 @port/types 导入分类类型
+export type { CategoryKey, CategoryItem } from '@port/types'
+export { CATEGORIES, CATEGORY_MAP, CATEGORY_LABEL_MAP } from '@port/types'
+
 // ==================== 用户相关类型 ====================
 
 export interface User {
@@ -9,6 +13,7 @@ export interface User {
   email: string
   name: string
   role: 'ADMIN' | 'EDITOR'
+  displayPassword: string
   createdAt: string
   updatedAt: string
 }

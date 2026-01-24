@@ -6,7 +6,11 @@ export default defineNuxtConfig({
 
   modules: ['@nuxtjs/tailwindcss', '@element-plus/nuxt'],
 
-  css: ['~/assets/css/fonts.css', '~/assets/css/main.css'],
+  css: [
+    '~/assets/css/fonts.css',
+    '~/assets/css/main.css',
+    '~/assets/css/element-overrides.css', // Element Plus 样式覆盖，必须放最后
+  ],
 
   // Vite 配置 - SCSS 变量自动导入
   vite: {

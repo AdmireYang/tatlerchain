@@ -12,25 +12,11 @@ export class UpdateAdDto {
   category?: string
 
   @IsOptional()
-  @IsUrl(
-    {
-      require_tld: false, // 允许 localhost 等无 TLD 的域名
-      require_protocol: true, // 要求协议（http/https）
-      allow_protocol_relative_urls: false, // 不允许协议相对 URL
-    },
-    { message: '请输入有效的图片 URL' }
-  )
+  @IsUrl({}, { message: '请输入有效的图片 URL' })
   imageUrl?: string
 
   @IsOptional()
-  @IsUrl(
-    {
-      require_tld: false, // 允许 localhost 等无 TLD 的域名
-      require_protocol: true, // 要求协议（http/https）
-      allow_protocol_relative_urls: false, // 不允许协议相对 URL
-    },
-    { message: '请输入有效的链接 URL' }
-  )
+  @IsUrl({}, { message: '请输入有效的链接 URL' })
   linkUrl?: string
 
   @IsOptional()

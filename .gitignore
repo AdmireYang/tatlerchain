@@ -35,3 +35,10 @@ coverage/
 # 临时文件
 tmp/
 temp/
+
+# 环境变量（包含敏感信息，禁止提交！）
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.development

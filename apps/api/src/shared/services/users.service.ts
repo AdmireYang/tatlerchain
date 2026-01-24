@@ -3,6 +3,7 @@ import { PrismaService } from '@/database/prisma.service'
 import { Role } from '@port/database'
 import * as bcrypt from 'bcryptjs'
 import { PaginatedResult } from '@/common/dto/pagination.dto'
+import { encrypt, decrypt } from '@/common/utils'
 
 @Injectable()
 export class UsersService {
@@ -60,6 +61,7 @@ export class UsersService {
           email: true,
           name: true,
           role: true,
+          displayPassword: true,
           createdAt: true,
           updatedAt: true,
           _count: {
@@ -70,7 +72,13 @@ export class UsersService {
       this.prisma.user.count({ where }),
     ])
 
-    return new PaginatedResult(users, total, page, pageSize)
+    // 解密 displayPassword
+    const usersWithPassword = users.map((user) => ({
+      ...user,
+      displayPassword: user.displayPassword ? decrypt(user.displayPassword) : null,
+    }))
+
+    return new PaginatedResult(usersWithPassword, total, page, pageSize)
   }
 
   /**
@@ -88,21 +96,30 @@ export class UsersService {
 
     // 加密密码
     const hashedPassword = await bcrypt.hash(data.password, 10)
+    // AES 加密原始密码用于展示
+    const encryptedDisplayPassword = encrypt(data.password)
 
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         ...data,
         password: hashedPassword,
+        displayPassword: encryptedDisplayPassword,
       },
       select: {
         id: true,
         email: true,
         name: true,
         role: true,
+        displayPassword: true,
         createdAt: true,
         updatedAt: true,
       },
     })
+
+    return {
+      ...user,
+      displayPassword: user.displayPassword ? decrypt(user.displayPassword) : null,
+    }
   }
 
   /**
@@ -131,23 +148,33 @@ export class UsersService {
       }
     }
 
-    // 如果更新密码，加密
+    // 准备更新数据
+    const updateData: any = { ...data }
+
+    // 如果更新密码，同时更新哈希密码和展示密码
     if (data.password) {
-      data.password = await bcrypt.hash(data.password, 10)
+      updateData.password = await bcrypt.hash(data.password, 10)
+      updateData.displayPassword = encrypt(data.password)
     }
 
-    return this.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: { id },
-      data,
+      data: updateData,
       select: {
         id: true,
         email: true,
         name: true,
         role: true,
+        displayPassword: true,
         createdAt: true,
         updatedAt: true,
       },
     })
+
+    return {
+      ...user,
+      displayPassword: user.displayPassword ? decrypt(user.displayPassword) : null,
+    }
   }
 
   /**

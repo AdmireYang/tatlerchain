@@ -2,12 +2,12 @@
 
 // 埋点事件表
 model TrackEvent {
-  id             String         @id @default(uuid())
-  code           String
-  type           TrackEventType
-  pagePath       String
-  pageTitle      String?
-  referrer       String?
+  id        String         @id @default(uuid())
+  code      String
+  type      TrackEventType
+  pagePath  String
+  pageTitle String?
+  referrer  String?
 
   // 设备信息
   deviceId       String?
@@ -20,15 +20,15 @@ model TrackEvent {
   screenHeight   Int?
 
   // 用户信息
-  userId         String?
-  sessionId      String?
-  ip             String?
+  userId    String?
+  sessionId String?
+  ip        String?
 
   // 扩展数据
-  extra          Json?
-  duration       Int?
+  extra    Json?
+  duration Int?
 
-  createdAt      DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@index([code])
   @@index([type])
@@ -42,9 +42,6 @@ model TrackEvent {
 // 埋点事件类型
 enum TrackEventType {
   EXPOSURE // 曝光
-  LEAVE    // 离开
-  CLICK    // 点击
+  LEAVE // 离开
+  CLICK // 点击
 }
-
-
-

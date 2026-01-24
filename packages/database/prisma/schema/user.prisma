@@ -2,15 +2,16 @@
 
 // 用户表
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String
-  name      String
-  role      Role      @default(EDITOR)
-  posts     Post[]
-  visitors  Visitor[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String
+  displayPassword String?   // AES 加密存储的初始密码，用于管理员查看
+  name            String
+  role            Role      @default(EDITOR)
+  posts           Post[]
+  visitors        Visitor[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@map("users")
 }
@@ -36,6 +37,4 @@ model Visitor {
   @@index([lastActiveAt])
   @@map("visitors")
 }
-
-
 

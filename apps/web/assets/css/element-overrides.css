@@ -1,0 +1,87 @@
+/* ============================================
+   Element Plus 样式覆盖
+   白底黑字简约风格
+   ============================================ */
+
+/* Message 消息提示 */
+.el-message {
+  background-color: #ffffff !important;
+  border: 1px solid #e5e5e5 !important;
+  border-radius: 0 !important;
+  padding: 14px 24px !important;
+  min-width: auto !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.el-message .el-message__content {
+  color: #1d1d1d !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.3px !important;
+}
+
+.el-message .el-message__icon {
+  font-size: 16px !important;
+  margin-right: 10px !important;
+}
+
+/* 成功 */
+.el-message--success {
+  background-color: #ffffff !important;
+  border-color: #e5e5e5 !important;
+}
+
+.el-message--success .el-message__icon {
+  color: #c45c4a !important;
+}
+
+/* 错误 */
+.el-message--error {
+  background-color: #ffffff !important;
+  border-color: #e5e5e5 !important;
+}
+
+.el-message--error .el-message__icon {
+  color: #e63946 !important;
+}
+
+/* 信息 */
+.el-message--info {
+  background-color: #ffffff !important;
+  border-color: #e5e5e5 !important;
+}
+
+.el-message--info .el-message__icon {
+  color: #1d1d1d !important;
+}
+
+/* 警告 */
+.el-message--warning {
+  background-color: #ffffff !important;
+  border-color: #e5e5e5 !important;
+}
+
+.el-message--warning .el-message__icon {
+  color: #f59e0b !important;
+}
+
+/* Dialog 弹窗 */
+.el-dialog {
+  border-radius: 0 !important;
+}
+
+.el-dialog__header {
+  border-bottom: 1px solid #eee;
+  padding: 16px 20px !important;
+}
+
+.el-dialog__title {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+}
+
+.el-dialog__body {
+  padding: 24px 20px !important;
+}
+

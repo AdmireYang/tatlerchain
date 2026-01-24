@@ -9,7 +9,7 @@
       <!-- 内容覆盖层 -->
       <div class="promo-overlay">
         <div class="promo-content">
-          <span v-if="item.category" class="promo-category">{{ item.category }}</span>
+          <!-- <span v-if="item.category" class="promo-category">{{ item.category }}</span> -->
           <h3 class="promo-title">{{ item.title }}</h3>
           <button class="promo-button">SEE MORE</button>
         </div>

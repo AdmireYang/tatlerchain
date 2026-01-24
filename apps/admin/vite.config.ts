@@ -15,9 +15,6 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: '@use "@/assets/scss/variables.scss" as *;',
-        // 使用新版 Sass API，消除 legacy-js-api 警告
-        api: 'modern-compiler',
-        silenceDeprecations: ['legacy-js-api'],
       },
     },
   },
@@ -30,21 +27,5 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-  },
-  // 构建优化
-  build: {
-    // 分包策略，减少内存压力
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vue-vendor': ['vue', 'vue-router', 'pinia'],
-          'element-plus': ['element-plus'],
-          'echarts': ['echarts'],
-        },
-      },
-    },
-    // 降低构建并行度，减少内存使用
-    minify: 'esbuild',
-    sourcemap: false,
   },
 })

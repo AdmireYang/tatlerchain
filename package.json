@@ -5,8 +5,7 @@
   "description": "Port Magazine - Monorepo 项目",
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build --filter='./apps/api' --filter='./apps/web'",
-    "build:all": "turbo run build",
+    "build": "turbo run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{vue,js,jsx,ts,tsx,json,css,scss,md}\"",

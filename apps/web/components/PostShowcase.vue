@@ -13,7 +13,7 @@
       <div class="showcase-content">
         <div class="content-inner">
           <!-- 分类标签 -->
-          <span class="category-tag">{{ post.category }}</span>
+          <span class="category-tag">{{ getCategoryLabel(post.category) }}</span>
 
           <!-- 标题 -->
           <h2 class="showcase-title">
@@ -35,10 +35,16 @@
 
 <script setup lang="ts">
 import type { PostListItem } from '~/types/api'
+import { CATEGORY_MAP, type CategoryKey } from '@port/types'
 
 const props = defineProps<{
   post: PostListItem
 }>()
+
+// 获取分类标签
+function getCategoryLabel(key: string): string {
+  return CATEGORY_MAP[key as CategoryKey] || key || ''
+}
 
 // 获取第一个广告（如果有配置）
 const firstAd = computed(() => {

@@ -30,11 +30,12 @@
           style="width: 100%"
           clearable
         >
-          <ElOption label="博物" value="博物" />
-          <ElOption label="人物" value="人物" />
-          <ElOption label="评弹" value="评弹" />
-          <ElOption label="影集" value="影集" />
-          <ElOption label="刊中刊" value="刊中刊" />
+          <ElOption
+            v-for="cat in CATEGORIES"
+            :key="cat.key"
+            :label="cat.label"
+            :value="cat.key"
+          />
         </ElSelect>
       </ElFormItem>
 
@@ -132,6 +133,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { Plus, Picture, Delete } from '@element-plus/icons-vue'
 import type { CreatePostDto, Advertisement } from '@/types/api'
+import { CATEGORIES } from '@port/types'
 import RichTextEditor from '@/components/common/RichTextEditor.vue'
 import ImageUpload from '@/components/common/ImageUpload.vue'
 import AdSelector from './AdSelector.vue'

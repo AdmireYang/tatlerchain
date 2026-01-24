@@ -25,8 +25,7 @@ model Post {
 
 // 推文状态
 enum PostStatus {
-  DRAFT     // 草稿
+  DRAFT // 草稿
   PUBLISHED // 发布
-  ARCHIVED  // 归档
+  ARCHIVED // 归档
 }
-

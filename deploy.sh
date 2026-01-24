@@ -378,68 +378,28 @@ build_and_start() {
 }
 
 # ============================================
-# 构建并部署 Admin 静态文件（使用本地构建产物）
+# 构建并部署 Admin 静态文件
 # ============================================
 build_admin() {
-    log_step "构建 Admin 后台（使用本地构建产物）..."
+    log_step "构建 Admin 后台 (Docker)..."
     cd $APP_DIR
     
     load_env
     
-    local ADMIN_DIST="$APP_DIR/apps/admin/dist"
-    
-    # 检查本地构建产物是否存在
-    if [ ! -d "$ADMIN_DIST" ] || [ ! -f "$ADMIN_DIST/index.html" ]; then
-        log_error "Admin 构建产物不存在: $ADMIN_DIST"
-        log_info ""
-        log_info "请先在本地执行以下命令构建 Admin："
-        log_info "  pnpm --filter @port/admin build"
-        log_info ""
-        log_info "然后使用以下方式之一上传构建产物："
-        log_info "  1. 使用 rsync: rsync -avz apps/admin/dist/ user@server:/var/www/tatlerchain/apps/admin/dist/"
-        log_info "  2. 使用 scp: scp -r apps/admin/dist user@server:/var/www/tatlerchain/apps/admin/"
-        log_info "  3. 使用 git: 将 dist 目录提交到仓库（不推荐）"
-        log_info ""
-        log_info "上传完成后，再次运行此脚本"
-        exit 1
-    fi
-    
-    log_info "✅ 找到本地构建产物: $ADMIN_DIST"
-    
-    # 使用本地构建产物构建 Docker 镜像（只构建运行阶段）
-    log_info "使用本地构建产物构建 Docker 镜像..."
-    
-    # 检查 Dockerfile.runtime 是否存在
-    local RUNTIME_DOCKERFILE="$APP_DIR/apps/admin/Dockerfile.runtime"
-    if [ ! -f "$RUNTIME_DOCKERFILE" ]; then
-        log_error "Dockerfile.runtime 不存在: $RUNTIME_DOCKERFILE"
-        exit 1
-    fi
-    
-    # 从环境变量读取 API_PORT（已通过 load_env 加载）
-    local api_port=${API_PORT:-3001}
-    log_info "使用 API_PORT: $api_port"
-    
-    # 使用 Dockerfile.runtime 构建镜像，传递 API_PORT 作为构建参数
-    docker build \
-      -f "$RUNTIME_DOCKERFILE" \
-      --build-arg API_PORT="$api_port" \
-      -t tatlerchain-admin:latest \
-      . || {
-        log_error "Docker 镜像构建失败"
-        exit 1
-    }
+    # 构建 Admin Docker 镜像
+    log_info "构建 Admin Docker 镜像..."
+    docker-compose -f docker-compose.prod.yml build admin
     
     # 启动/重启 Admin 容器
     log_info "启动 Admin 容器..."
     docker-compose -f docker-compose.prod.yml up -d admin
     
-    log_info "Admin 部署完成 ✓"
+    log_info "Admin 构建完成 ✓"
     log_info "访问地址: http://$SERVER_IP:${ADMIN_PORT:-8080}"
 }
 
 # ============================================
-# 单独部署 Admin（使用本地构建产物）
+# 单独部署 Admin（Docker 方式）
 # ============================================
 deploy_admin() {
     check_root "admin"
@@ -447,54 +407,15 @@ deploy_admin() {
     
     load_env
     
-    log_info "开始部署 Admin（使用本地构建产物）..."
+    log_info "开始部署 Admin (Docker)..."
     
     # 拉取最新代码
     log_step "拉取最新代码..."
     git pull origin main
     
-    # 检查本地构建产物
-    local ADMIN_DIST="$APP_DIR/apps/admin/dist"
-    
-    if [ ! -d "$ADMIN_DIST" ] || [ ! -f "$ADMIN_DIST/index.html" ]; then
-        log_error "Admin 构建产物不存在: $ADMIN_DIST"
-        log_info ""
-        log_info "请先在本地执行以下命令构建 Admin："
-        log_info "  pnpm --filter @port/admin build"
-        log_info ""
-        log_info "然后使用以下方式之一上传构建产物："
-        log_info "  1. 使用 rsync: rsync -avz apps/admin/dist/ user@server:/var/www/tatlerchain/apps/admin/dist/"
-        log_info "  2. 使用 scp: scp -r apps/admin/dist user@server:/var/www/tatlerchain/apps/admin/"
-        log_info ""
-        log_info "上传完成后，再次运行此脚本"
-        exit 1
-    fi
-    
-    log_info "✅ 找到本地构建产物: $ADMIN_DIST"
-    
-    # 使用本地构建产物构建 Docker 镜像
-    log_step "使用本地构建产物构建 Docker 镜像..."
-    
-    # 检查 Dockerfile.runtime 是否存在
-    local RUNTIME_DOCKERFILE="$APP_DIR/apps/admin/Dockerfile.runtime"
-    if [ ! -f "$RUNTIME_DOCKERFILE" ]; then
-        log_error "Dockerfile.runtime 不存在: $RUNTIME_DOCKERFILE"
-        exit 1
-    fi
-    
-    # 从环境变量读取 API_PORT（已通过 load_env 加载）
-    local api_port=${API_PORT:-3001}
-    log_info "使用 API_PORT: $api_port"
-    
-    # 使用 Dockerfile.runtime 构建镜像，传递 API_PORT 作为构建参数
-    docker build \
-      -f "$RUNTIME_DOCKERFILE" \
-      --build-arg API_PORT="$api_port" \
-      -t tatlerchain-admin:latest \
-      . || {
-        log_error "Docker 镜像构建失败"
-        exit 1
-    }
+    # 构建并启动 Admin 容器
+    log_step "构建 Admin Docker 镜像..."
+    docker-compose -f docker-compose.prod.yml build admin
     
     log_step "启动 Admin 容器..."
     docker-compose -f docker-compose.prod.yml up -d admin
@@ -811,8 +732,8 @@ show_help() {
     echo "命令列表:"
     echo "  init        首次部署（完整安装）"
     echo "  update      更新部署（拉取代码并重新构建）"
-    echo "  admin       单独部署 Admin 后台（使用本地构建产物，推荐）"
-    echo "  admin-sync  同步本地 Admin 构建产物到 Nginx（不使用 Docker）"
+    echo "  admin       单独部署 Admin 后台（服务器构建）"
+    echo "  admin-sync  同步本地 Admin 构建产物（推荐）"
     echo "  status      查看服务状态"
     echo "  logs        查看日志（默认 api，可指定: logs web）"
     echo "  restart     重启服务（可指定: restart api）"

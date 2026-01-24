@@ -51,44 +51,24 @@
             <div class="share-section">
               <span class="share-title">分享</span>
               <div class="share-links">
-                <a :href="shareLinks.email" class="share-link" title="Email">
-                  <svg
-                    class="share-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-                    />
-                    <polyline points="22,6 12,13 2,6" />
-                  </svg>
-                  <span>EMAIL</span>
-                </a>
+                <!-- 小红书 -->
+                <button
+                  class="share-link"
+                  title="分享到小红书"
+                  @click="shareToXiaohongshu"
+                >
+                  <img :src="xhsIcon" alt="小红书" class="share-icon-img">
+                  <span>小红书</span>
+                </button>
+                <!-- 微博 -->
                 <a
                   href="#"
                   class="share-link"
-                  title="Facebook"
-                  @click.prevent="openSharePopup('facebook')"
+                  title="分享到微博"
+                  @click.prevent="openSharePopup('weibo')"
                 >
-                  <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                  </svg>
-                  <span>FACEBOOK</span>
-                </a>
-                <a
-                  href="#"
-                  class="share-link"
-                  title="Twitter"
-                  @click.prevent="openSharePopup('twitter')"
-                >
-                  <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
-                    />
-                  </svg>
-                  <span>TWITTER</span>
+                  <img :src="wbIcon" alt="微博" class="share-icon-img">
+                  <span>微博</span>
                 </a>
               </div>
             </div>
@@ -165,6 +145,8 @@
 
 <script setup lang="ts">
 import type { Advertisement } from '~/types/api'
+import xhsIcon from '~/assets/images/xhs.svg'
+import wbIcon from '~/assets/images/wb.svg'
 
 const route = useRoute()
 const postApi = usePostsApi()
@@ -206,9 +188,7 @@ const shareLinks = computed(() => {
   const url = typeof window !== 'undefined' ? encodeURIComponent(window.location.href) : ''
 
   return {
-    email: `mailto:?subject=${title}&body=${url}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-    twitter: `https://twitter.com/intent/tweet?text=${title}&url=${url}`,
+    weibo: `https://service.weibo.com/share/share.php?url=${url}&title=${title}`,
   }
 })
 
@@ -234,7 +214,7 @@ function recordClick(id: string) {
 }
 
 // 打开分享小窗口
-function openSharePopup(platform: 'facebook' | 'twitter') {
+function openSharePopup(platform: 'weibo') {
   const url = shareLinks.value[platform]
   const width = 600
   const height = 400
@@ -246,6 +226,39 @@ function openSharePopup(platform: 'facebook' | 'twitter') {
     `share-${platform}`,
     `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes,resizable=yes`
   )
+}
+
+// 分享到小红书
+async function shareToXiaohongshu() {
+  const text = `${post.value?.title}\n${window.location.href}`
+  
+  // 先复制内容到剪贴板
+  try {
+    await navigator.clipboard.writeText(text)
+  } catch {
+    // 忽略复制失败
+  }
+
+  // 尝试打开小红书 App
+  const schemeUrl = 'xhsdiscover://home'
+  const startTime = Date.now()
+  
+  // 创建隐藏的 iframe 尝试唤起 App
+  const iframe = document.createElement('iframe')
+  iframe.style.display = 'none'
+  iframe.src = schemeUrl
+  document.body.appendChild(iframe)
+
+  // 检测是否成功打开 App
+  setTimeout(() => {
+    document.body.removeChild(iframe)
+    const elapsed = Date.now() - startTime
+    
+    // 如果页面还在且时间很短，说明 App 没有打开
+    if (elapsed < 2000 && document.visibilityState !== 'hidden') {
+      ElMessage.success('链接已复制，请打开小红书 App 粘贴分享')
+    }
+  }, 1500)
 }
 </script>
 
@@ -390,19 +403,27 @@ function openSharePopup(platform: 'facebook' | 'twitter') {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 12px;
   color: #333;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
 
   &:hover {
-    color: #c45c4a;
+    opacity: 0.7;
   }
 }
 
 .share-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.share-icon-img {
   width: 16px;
   height: 16px;
   flex-shrink: 0;

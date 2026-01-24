@@ -46,7 +46,7 @@
                   @change="handleToggleStatus(post.id, post.status)"
                   label="在官网展示"
                 />
-                <span class="post-category">{{ post.category }}</span>
+                <span class="post-category">{{ getCategoryLabel(post.category) }}</span>
                 <span class="post-views">浏览 {{ post.viewCount }}</span>
               </div>
             </div>
@@ -98,9 +98,15 @@ import { useTable } from '@/composables'
 import { getPosts } from '@/api'
 import { showDeleteConfirm } from '@/utils'
 import ListSkeleton from '@/components/common/ListSkeleton.vue'
+import { CATEGORY_MAP, type CategoryKey } from '@port/types'
 
 const router = useRouter()
 const postStore = usePostStore()
+
+// 获取分类标签
+function getCategoryLabel(key: string): string {
+  return CATEGORY_MAP[key as CategoryKey] || key || '未分类'
+}
 
 // 使用 useTable 管理表格数据
 const { data, total, loading, page, pageSize, fetchData, handlePageChange, handlePageSizeChange } =

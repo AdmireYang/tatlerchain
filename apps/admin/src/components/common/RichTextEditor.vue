@@ -192,7 +192,6 @@ const editor = useEditor({
   content: getInitialContent(props.modelValue),
   editable: props.editable,
   onUpdate: ({ editor }) => {
-    // 始终输出 HTML 格式，而不是 JSON 配置格式
     emit('update:modelValue', editor.getHTML())
   },
 })
@@ -214,11 +213,9 @@ function getInitialContent(value: any) {
     return value || '<p></p>'
   }
 
-  // 如果是有效的 Tiptap JSON 对象（兼容旧数据），Tiptap 会自动处理
-  // 但我们会确保输出始终是 HTML 格式
+  // 如果是有效的 Tiptap JSON 对象（兼容旧数据），转换为 HTML
   if (typeof value === 'object' && value.type) {
-    // Tiptap 的 setContent 可以接受 JSON，但我们需要确保输出是 HTML
-    // 这里先返回 JSON，编辑器初始化后会自动处理
+    // 如果编辑器已初始化，使用编辑器转换，否则返回 JSON（编辑器会自动处理）
     return value
   }
 
@@ -236,15 +233,12 @@ watch(
       if (typeof value === 'string') {
         if (currentContent !== value) {
           editor.value.commands.setContent(value)
-          // setContent 会触发 onUpdate，自动输出 HTML 格式
         }
       } else if (typeof value === 'object') {
-        // 如果是 JSON 对象（兼容旧数据），转换为 HTML
+        // 如果是 JSON 对象（兼容旧数据），也支持
         const currentJson = editor.value.getJSON()
         const isSame = JSON.stringify(currentJson) === JSON.stringify(value)
         if (!isSame) {
-          // 设置 JSON 内容，Tiptap 会自动处理并触发 onUpdate
-          // onUpdate 会将 JSON 转换为 HTML 并输出
           editor.value.commands.setContent(value)
         }
       } else {

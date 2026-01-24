@@ -1,11 +1,8 @@
-import { IsNotEmpty, IsString, MinLength, MaxLength, Matches } from 'class-validator'
+import { IsNotEmpty, IsString, MinLength, IsEmail } from 'class-validator'
 
 export class RegisterDto {
-  @IsString()
-  @IsNotEmpty({ message: '账号不能为空' })
-  @MinLength(3, { message: '账号长度至少3位' })
-  @MaxLength(50, { message: '账号长度不能超过50位' })
-  @Matches(/^[a-zA-Z0-9_-]+$/, { message: '账号只能包含字母、数字、下划线和横线' })
+  @IsEmail({}, { message: '请输入有效的邮箱地址' })
+  @IsNotEmpty({ message: '邮箱不能为空' })
   email: string
 
   @IsString()
@@ -17,3 +14,7 @@ export class RegisterDto {
   @IsNotEmpty({ message: '姓名不能为空' })
   name: string
 }
+
+
+
+
