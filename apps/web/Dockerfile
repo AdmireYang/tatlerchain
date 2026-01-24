@@ -1,4 +1,5 @@
 # apps/web/Dockerfile
+# syntax=docker/dockerfile:1.4
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -10,36 +11,32 @@ RUN npm config set registry https://registry.npmmirror.com
 RUN npm install -g pnpm && \
     pnpm config set registry https://registry.npmmirror.com
 
-# 复制 workspace 配置
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-# 构建参数：API 地址
-ARG API_BASE_URL=http://localhost:3001
-
-# 创建 .env 文件供构建时使用
-RUN echo "API_BASE_URL=${API_BASE_URL}" > .env
-
-# 配置 pnpm 使用 hoisted 模式（Docker 中避免符号链接问题）
+# 配置 pnpm 使用 hoisted 模式
 RUN echo "shamefully-hoist=true" > .npmrc && \
     echo "node-linker=hoisted" >> .npmrc
 
-# 复制各包的 package.json
+# 构建参数：API 地址
+ARG API_BASE_URL=http://localhost:3001
+RUN echo "API_BASE_URL=${API_BASE_URL}" > .env
+
+# 复制 workspace 配置和所有 package.json（用于依赖缓存判断）
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/config/package.json ./packages/config/
 COPY packages/types/package.json ./packages/types/
 COPY packages/utils/package.json ./packages/utils/
 COPY apps/web/package.json ./apps/web/
 
-# 安装依赖（不使用 frozen-lockfile，因为 Docker 中使用不同的 node-linker）
-RUN pnpm install
-
-# 复制源码
+# 复制 workspace 包源码（这些包很小，很少变化）
 COPY packages ./packages
+
+# 安装依赖（使用缓存挂载加速）
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
+    pnpm install
+
+# 复制 web 源码（经常变化的部分）
 COPY apps/web ./apps/web
 
-# 重新安装以确保 workspace 包正确链接
-RUN pnpm install
-
-# 构建 Web（包含依赖的 workspace 包）
+# 构建 Web
 RUN pnpm --filter @port/web build
 
 # =====================
@@ -49,13 +46,10 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# 安装 wget（健康检查需要）
 RUN apk add --no-cache wget
 
-# 复制 Nuxt 构建产物
 COPY --from=builder /app/apps/web/.output ./.output
 
-# 设置环境变量
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3003
@@ -63,4 +57,3 @@ ENV PORT=3003
 EXPOSE 3003
 
 CMD ["node", ".output/server/index.mjs"]
-
