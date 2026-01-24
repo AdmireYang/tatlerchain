@@ -53,9 +53,9 @@ export default defineNuxtConfig({
         },
         {
           rel: 'preload',
-          href: '/fonts/Fz.ttf',
+          href: '/fonts/Fz.woff',
           as: 'font',
-          type: 'font/ttf',
+          type: 'font/woff',
           crossorigin: '',
         },
       ],
