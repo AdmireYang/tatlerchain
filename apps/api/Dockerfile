@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# 配置 Alpine 国内镜像源
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
 # 配置 npm 镜像源（国内加速）
 RUN npm config set registry https://registry.npmmirror.com
 
@@ -47,9 +50,13 @@ FROM node:20-slim AS runner
 
 WORKDIR /app
 
+# 配置 apt 国内镜像源（加速）
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || \
+    sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list 2>/dev/null || true
+
 # 安装 OpenSSL 和其他必要依赖（Prisma 需要，wget 用于健康检查）
 RUN apt-get update && \
-    apt-get install -y openssl ca-certificates wget && \
+    apt-get install -y --no-install-recommends openssl ca-certificates wget && \
     rm -rf /var/lib/apt/lists/*
 
 # 配置 npm 镜像源

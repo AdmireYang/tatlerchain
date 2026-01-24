@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# 配置 Alpine 国内镜像源
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
 # 配置 npm 镜像源（国内加速）
 RUN npm config set registry https://registry.npmmirror.com
 
@@ -45,6 +48,9 @@ RUN pnpm --filter @port/web build
 FROM node:20-alpine AS runner
 
 WORKDIR /app
+
+# 配置 Alpine 国内镜像源
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 # 安装 wget（健康检查需要）
 RUN apk add --no-cache wget
