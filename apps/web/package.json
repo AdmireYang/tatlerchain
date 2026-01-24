@@ -14,6 +14,7 @@
     "@element-plus/icons-vue": "^2.3.2",
     "@element-plus/nuxt": "^1.1.4",
     "@pinia/nuxt": "^0.11.3",
+    "@port/config": "workspace:*",
     "@port/types": "workspace:*",
     "@port/utils": "workspace:*",
     "element-plus": "^2.13.1",
