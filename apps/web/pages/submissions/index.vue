@@ -2,7 +2,7 @@
   <div class="submissions-page">
     <!-- 页面标题 -->
     <header class="page-header">
-      <h1 class="page-title">投稿</h1>
+      <h1 class="page-title font-fz-extrabold">投稿</h1>
     </header>
 
     <!-- 页面内容 -->
@@ -28,7 +28,7 @@
             我们有足够的版面，并渴望发表严肃的深度报道。
           </p>
           <p class="category-contact">
-            <em>请将简短的选题提案发送至：<a href="mailto:ayla@port-magazine.com">ayla@port-magazine.com</a></em>
+            <em>请将简短的选题提案发送至：<a href="mailto:ayla@port-magazine.com" class="font-a2-light">ayla@port-magazine.com</a></em>
           </p>
         </section>
 
@@ -44,7 +44,7 @@
             （欢迎翻译作品，前提是未曾以英文在其他地方发表过。）
           </p>
           <p class="category-contact">
-            <em>请将故事发送至：<a href="mailto:ayla@port-magazine.com">ayla@port-magazine.com</a></em>
+            <em>请将故事发送至：<a href="mailto:ayla@port-magazine.com" class="font-a2-light">ayla@port-magazine.com</a></em>
           </p>
         </section>
 
@@ -58,7 +58,7 @@
             无论作品仍在进行中还是已经完成，我们都很乐意查阅。
           </p>
           <p class="category-contact">
-            <em>请将您的作品链接或 PDF 作品集发送至：<a href="mailto:info@port-magazine.com">info@port-magazine.com</a></em>
+            <em>请将您的作品链接或 PDF 作品集发送至：<a href="mailto:info@port-magazine.com" class="font-a2-light">info@port-magazine.com</a></em>
           </p>
         </section>
 

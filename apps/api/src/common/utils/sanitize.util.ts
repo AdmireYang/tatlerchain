@@ -93,6 +93,7 @@ const sanitizeOptions: sanitizeHtml.IOptions = {
       'font-size': [/.*/],
       'font-weight': [/.*/],
       'font-style': [/.*/],
+      'font-family': [/.*/], // 允许字体设置
       'text-align': [/.*/],
       'text-decoration': [/.*/],
       'line-height': [/.*/],

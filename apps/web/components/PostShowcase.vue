@@ -13,10 +13,10 @@
       <div class="showcase-content">
         <div class="content-inner">
           <!-- 分类标签 -->
-          <span class="category-tag">{{ getCategoryLabel(post.category) }}</span>
+          <span class="category-tag font-fz-light">{{ getCategoryLabel(post.category) }}</span>
 
           <!-- 标题 -->
-          <h2 class="showcase-title">
+          <h2 class="showcase-title font-fz-bold">
             <NuxtLink :to="`/post/${post.slug}`">
               {{ post.title }}
             </NuxtLink>

@@ -40,6 +40,25 @@
         </button>
       </div>
 
+      <!-- 字体选择 -->
+      <div class="toolbar-group">
+        <select
+          v-model="currentFont"
+          @change="setFont(currentFont)"
+          class="font-select"
+          title="字体"
+        >
+          <option
+            v-for="font in fontOptions"
+            :key="font.value"
+            :value="font.value"
+            :style="{ fontFamily: font.value || 'inherit' }"
+          >
+            {{ font.label }}
+          </option>
+        </select>
+      </div>
+
       <!-- 标题 -->
       <div class="toolbar-group">
         <button
@@ -148,12 +167,14 @@
 </template>
 
 <script setup lang="ts">
-import { watch, onBeforeUnmount } from 'vue'
+import { watch, onBeforeUnmount, ref } from 'vue'
 import { ElMessageBox } from 'element-plus'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
+import { TextStyle } from '@tiptap/extension-text-style'
+import { FontFamily } from '@tiptap/extension-font-family'
 
 // Props
 interface Props {
@@ -173,6 +194,20 @@ const emit = defineEmits<{
   'update:modelValue': [value: any]
 }>()
 
+// 字体选项
+const fontOptions = [
+  { label: '默认字体', value: '' },
+  { label: '方正悠黑 细体', value: 'FZYouHei Light' },
+  { label: '方正悠黑 中等', value: 'FZYouHei Medium' },
+  { label: 'A2 Record Gothic Light', value: 'A2 Record Gothic Light' },
+  { label: 'A2 Record Gothic Regular', value: 'A2 Record Gothic Regular' },
+  { label: 'A2 Record Gothic Medium', value: 'A2 Record Gothic Medium' },
+  { label: 'A2 Record Gothic Extrabold', value: 'A2 Record Gothic Extrabold' },
+]
+
+// 当前选中的字体
+const currentFont = ref('')
+
 // 编辑器实例
 const editor = useEditor({
   extensions: [
@@ -188,13 +223,40 @@ const editor = useEditor({
         rel: 'noopener noreferrer',
       },
     }),
+    TextStyle,
+    FontFamily.configure({
+      types: ['textStyle'],
+    }),
   ],
   content: getInitialContent(props.modelValue),
   editable: props.editable,
   onUpdate: ({ editor }) => {
     emit('update:modelValue', editor.getHTML())
+    updateCurrentFont()
+  },
+  onSelectionUpdate: () => {
+    updateCurrentFont()
   },
 })
+
+// 更新当前字体
+function updateCurrentFont() {
+  if (editor.value) {
+    const fontFamily = editor.value.getAttributes('textStyle').fontFamily || ''
+    currentFont.value = fontFamily
+  }
+}
+
+// 设置字体
+function setFont(font: string) {
+  if (editor.value) {
+    if (font) {
+      editor.value.chain().focus().setFontFamily(font).run()
+    } else {
+      editor.value.chain().focus().unsetFontFamily().run()
+    }
+  }
+}
 
 // 获取初始内容
 function getInitialContent(value: any) {
@@ -352,6 +414,26 @@ onBeforeUnmount(() => {
         &:disabled {
           opacity: 0.5;
           cursor: not-allowed;
+        }
+      }
+
+      .font-select {
+        padding: 4px 8px;
+        border: 1px solid #dcdfe6;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
+        min-width: 180px;
+        transition: all 0.2s;
+
+        &:hover {
+          border-color: #409eff;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #409eff;
         }
       }
     }

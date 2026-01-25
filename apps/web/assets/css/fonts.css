@@ -44,9 +44,11 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/Fz.woff') format('woff');
+  src: url('/fonts/FZYouHJW_508R.TTF') format('truetype');
   /* 匹配中文及其他非拉丁字符 */
-  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF, U+FE10-FE1F, U+FE30-FE4F;
+  unicode-range:
+    U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF,
+    U+FE10-FE1F, U+FE30-FE4F;
 }
 
 @font-face {
@@ -54,8 +56,10 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/fonts/Fz.woff') format('woff');
-  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF, U+FE10-FE1F, U+FE30-FE4F;
+  src: url('/fonts/FZYouHJW_508R.TTF') format('truetype');
+  unicode-range:
+    U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF,
+    U+FE10-FE1F, U+FE30-FE4F;
 }
 
 @font-face {
@@ -63,8 +67,10 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/fonts/Fz.woff') format('woff');
-  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF, U+FE10-FE1F, U+FE30-FE4F;
+  src: url('/fonts/FZYouHJW_508R.TTF') format('truetype');
+  unicode-range:
+    U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF,
+    U+FE10-FE1F, U+FE30-FE4F;
 }
 
 @font-face {
@@ -72,6 +78,165 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/Fz.woff') format('woff');
-  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF, U+FE10-FE1F, U+FE30-FE4F;
+  src: url('/fonts/FZYouHJW_508R.TTF') format('truetype');
+  unicode-range:
+    U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF,
+    U+FE10-FE1F, U+FE30-FE4F;
+}
+
+/* 方正悠黑 512B (粗体) */
+@font-face {
+  font-family: 'FZYouHei Bold';
+  src: url('/fonts/FZYouHJW_512B.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 方正悠黑 513B (特粗) */
+@font-face {
+  font-family: 'FZYouHei ExtraBold';
+  src: url('/fonts/FZYouHJW_513B.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ========== 富文本编辑器自定义字体 ========== */
+
+/* 方正悠黑 503L (细体) */
+@font-face {
+  font-family: 'FZYouHei Light';
+  src: url('/fonts/FZYouHJW_503L.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 方正悠黑 511M (中等) */
+@font-face {
+  font-family: 'FZYouHei Medium';
+  src: url('/fonts/FZYouHJW_511M.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* A2 Record Gothic Light */
+@font-face {
+  font-family: 'A2 Record Gothic Light';
+  src: url('/fonts/A2RecordGothic-Light.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* A2 Record Gothic Regular */
+@font-face {
+  font-family: 'A2 Record Gothic Regular';
+  src: url('/fonts/A2RecordGothic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* A2 Record Gothic Medium */
+@font-face {
+  font-family: 'A2 Record Gothic Medium';
+  src: url('/fonts/A2RecordGothic-Medium.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* A2 Record Gothic Extrabold */
+@font-face {
+  font-family: 'A2 Record Gothic Extrabold';
+  src: url('/fonts/A2RecordGothic-Extrabold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ========== 全局字体工具类 ========== */
+
+/* Port 字体 - 英文专用 */
+.font-port {
+  font-family: 'Port', sans-serif;
+}
+
+/* 方正悠黑系列 - 中文字体 */
+.font-fz {
+  font-family: 'FZ', 'Microsoft YaHei', sans-serif;
+}
+
+.font-fz-light {
+  font-family: 'FZYouHei Light', 'Microsoft YaHei', sans-serif;
+}
+
+.font-fz-regular {
+  font-family: 'FZ', 'Microsoft YaHei', sans-serif;
+}
+
+.font-fz-medium {
+  font-family: 'FZYouHei Medium', 'Microsoft YaHei', sans-serif;
+}
+
+.font-fz-bold {
+  font-family: 'FZYouHei Bold', 'Microsoft YaHei', sans-serif;
+}
+
+.font-fz-extrabold {
+  font-family: 'FZYouHei ExtraBold', 'Microsoft YaHei', sans-serif;
+}
+
+/* A2 Record Gothic 系列 - 英文字体 */
+.font-a2-light {
+  font-family: 'A2 Record Gothic Light', Arial, sans-serif;
+}
+
+.font-a2-regular {
+  font-family: 'A2 Record Gothic Regular', Arial, sans-serif;
+}
+
+.font-a2-medium {
+  font-family: 'A2 Record Gothic Medium', Arial, sans-serif;
+}
+
+.font-a2-extrabold {
+  font-family: 'A2 Record Gothic Extrabold', Arial, sans-serif;
+}
+
+/* 混合字体 - 英文用 Port，中文用方正悠黑 */
+.font-mixed {
+  font-family: 'Port', 'FZ', 'Microsoft YaHei', sans-serif;
+}
+
+.font-mixed-light {
+  font-family: 'Port', 'FZYouHei Light', 'Microsoft YaHei', sans-serif;
+}
+
+.font-mixed-medium {
+  font-family: 'Port', 'FZYouHei Medium', 'Microsoft YaHei', sans-serif;
+}
+
+.font-mixed-bold {
+  font-family: 'Port', 'FZYouHei Bold', 'Microsoft YaHei', sans-serif;
+}
+
+/* A2 + 方正悠黑混合 */
+.font-a2-fz-light {
+  font-family: 'A2 Record Gothic Light', 'FZYouHei Light', 'Microsoft YaHei', sans-serif;
+}
+
+.font-a2-fz-regular {
+  font-family: 'A2 Record Gothic Regular', 'FZ', 'Microsoft YaHei', sans-serif;
+}
+
+.font-a2-fz-medium {
+  font-family: 'A2 Record Gothic Medium', 'FZYouHei Medium', 'Microsoft YaHei', sans-serif;
+}
+
+.font-a2-fz-extrabold {
+  font-family: 'A2 Record Gothic Extrabold', 'FZYouHei ExtraBold', 'Microsoft YaHei', sans-serif;
 }

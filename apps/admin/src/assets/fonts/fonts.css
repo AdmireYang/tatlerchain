@@ -1,0 +1,112 @@
+/**
+ * 自定义字体声明
+ */
+
+/* ========== 中文字体 ========== */
+
+/* 方正悠黑 503L (细体) */
+@font-face {
+  font-family: 'FZYouHei';
+  src: url('./FZYouHJW_503L.TTF') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 方正悠黑 511M (中等) */
+@font-face {
+  font-family: 'FZYouHei';
+  src: url('./FZYouHJW_511M.TTF') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 方正悠黑 503L 单独字体名 */
+@font-face {
+  font-family: 'FZYouHei Light';
+  src: url('./FZYouHJW_503L.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 方正悠黑 511M 单独字体名 */
+@font-face {
+  font-family: 'FZYouHei Medium';
+  src: url('./FZYouHJW_511M.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ========== 英文字体 ========== */
+
+/* A2 Record Gothic Light */
+@font-face {
+  font-family: 'A2 Record Gothic';
+  src: url('./A2RecordGothic-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* A2 Record Gothic Regular */
+@font-face {
+  font-family: 'A2 Record Gothic';
+  src: url('./A2RecordGothic-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* A2 Record Gothic Medium */
+@font-face {
+  font-family: 'A2 Record Gothic';
+  src: url('./A2RecordGothic-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* A2 Record Gothic Extrabold */
+@font-face {
+  font-family: 'A2 Record Gothic';
+  src: url('./A2RecordGothic-Extrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* A2 Record Gothic 单独字体名 */
+@font-face {
+  font-family: 'A2 Record Gothic Light';
+  src: url('./A2RecordGothic-Light.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'A2 Record Gothic Regular';
+  src: url('./A2RecordGothic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'A2 Record Gothic Medium';
+  src: url('./A2RecordGothic-Medium.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'A2 Record Gothic Extrabold';
+  src: url('./A2RecordGothic-Extrabold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

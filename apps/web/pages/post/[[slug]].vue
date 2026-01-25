@@ -27,10 +27,10 @@
       <header class="post-header">
         <div class="header-container">
           <!-- 分类标签 -->
-          <span class="category-tag">{{ post.category }}</span>
+          <span class="category-tag font-fz-light">{{ post.category }}</span>
 
           <!-- 标题 -->
-          <h1 class="post-title">{{ post.title }}</h1>
+          <h1 class="post-title font-fz-extrabold">{{ post.title }}</h1>
 
           <!-- 描述 -->
           <p class="post-excerpt">{{ post.excerpt }}</p>
@@ -131,7 +131,7 @@
                   <img :src="relatedPost.coverImage" :alt="relatedPost.title" />
                 </div>
                 <div class="related-content">
-                  <span class="related-category">{{ relatedPost.category }}</span>
+                  <span class="related-category font-fz-light">{{ relatedPost.category }}</span>
                   <h3 class="related-card-title">{{ relatedPost.title }}</h3>
                 </div>
               </NuxtLink>
