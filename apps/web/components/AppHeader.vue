@@ -18,11 +18,6 @@
     </div>
   </header>
 
-  <!-- 菜单面板 -->
-  <Transition name="menu-fade">
-    <div v-if="menuOpen" class="menu-overlay" @click="closeMenu"></div>
-  </Transition>
-
   <Transition name="menu-slide">
     <nav v-if="menuOpen" class="menu-panel">
       <div class="menu-content">
@@ -32,7 +27,7 @@
             v-for="(cat, index) in CATEGORIES"
             :key="cat.key"
             class="menu-item"
-            :style="{ animationDelay: `${index * 0.05}s` }"
+            :style="{ animationDelay: `${index * 0.08}s` }"
           >
             <NuxtLink
               :to="`/category/${cat.key}`"
@@ -78,12 +73,12 @@ function handleScroll() {
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
   // 打开菜单时禁止滚动
-  document.body.style.overflow = menuOpen.value ? 'hidden' : ''
+  // document.body.style.overflow = menuOpen.value ? 'hidden' : ''
 }
 
 function closeMenu() {
   menuOpen.value = false
-  document.body.style.overflow = ''
+  // document.body.style.overflow = ''
 }
 
 onMounted(() => {
@@ -230,28 +225,14 @@ onUnmounted(() => {
   }
 }
 
-// 菜单遮罩
-.menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 90;
-  backdrop-filter: blur(4px);
-}
-
 // 菜单面板 - 下拉式
 .menu-panel {
   position: fixed;
   top: 80px;
   left: 0;
   right: 0;
-  background: #fff;
+  background:transparent;
   z-index: 95;
-  border-bottom: 1px solid #e5e5e5;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 
   @media (min-width: 768px) {
     top: 88px;
@@ -261,13 +242,13 @@ onUnmounted(() => {
 .menu-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 12px;
+  padding: 0px 12px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px 32px;
 
   @media (min-width: 768px) {
-    padding: 40px;
+    padding: 8px 40px;
     gap: 16px 48px;
   }
 }
@@ -285,7 +266,7 @@ onUnmounted(() => {
   gap: 8px 32px;
 
   @media (min-width: 768px) {
-    gap: 12px 48px;
+    gap: 12px 40px;
   }
 }
 
