@@ -20,3 +20,5 @@ model ApiLog {
   @@index([createdAt])
   @@map("api_logs")
 }
+
+

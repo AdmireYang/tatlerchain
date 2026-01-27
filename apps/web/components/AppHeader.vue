@@ -263,11 +263,8 @@ onUnmounted(() => {
   margin: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 48px;
-
-  @media (min-width: 768px) {
-    gap: 12px 64px;
-  }
+  width: 100%;
+  justify-content: space-between;
 }
 
 .menu-item {

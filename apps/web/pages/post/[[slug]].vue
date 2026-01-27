@@ -532,13 +532,13 @@ async function shareToXiaohongshu() {
     margin-bottom: 24px;
   }
 
-  :deep(blockquote) {
-    margin: 32px 0;
-    padding-left: 24px;
-    border-left: 3px solid #c45c4a;
-    font-style: italic;
-    color: #555;
-  }
+  // :deep(blockquote) {
+  //   margin: 32px 0;
+  //   padding-left: 24px;
+  //   border-left: 3px solid #c45c4a;
+  //   font-style: italic;
+  //   color: #555;
+  // }
 
   :deep(figure) {
     margin: 32px 0;
