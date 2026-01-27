@@ -151,10 +151,10 @@ onUnmounted(() => {
 }
 
 .logo-img {
-  height: 60px;
+  height: 78px;
 
   @media (min-width: 768px) {
-    height: 70px;
+    height: 86px;
   }
 }
 
@@ -242,13 +242,13 @@ onUnmounted(() => {
 .menu-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0px 12px;
+  padding: 12px 12px 24px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px 32px;
 
   @media (min-width: 768px) {
-    padding: 8px 40px;
+    padding: 16px 40px 32px;
     gap: 16px 48px;
   }
 }
@@ -263,10 +263,10 @@ onUnmounted(() => {
   margin: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 32px;
+  gap: 8px 48px;
 
   @media (min-width: 768px) {
-    gap: 12px 40px;
+    gap: 12px 64px;
   }
 }
 
@@ -290,7 +290,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 0;
+  padding: 0 0 8px 0;
   text-decoration: none;
   color: inherit;
   transition: all 0.2s ease;

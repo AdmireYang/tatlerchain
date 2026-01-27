@@ -3,7 +3,7 @@
     <!-- 有数据时显示文章列表 -->
     <template v-if="posts.length > 0">
       <!-- 首页文章展示 -->
-      <section class="py-8 md:py-12">
+      <section class="py-8 md:py-16">
         <div class="max-w-7xl mx-auto px-4 md:px-6 space-y-12 md:space-y-16">
           <PostShowcase v-for="post in posts" :key="post.id" :post="post" />
         </div>
