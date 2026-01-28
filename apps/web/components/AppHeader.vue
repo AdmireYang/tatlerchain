@@ -46,7 +46,6 @@
               :class="{ active: isActive(cat.key) }"
               @click="closeMenu"
             >
-              <span class="menu-link-number">{{ String(index + 1).padStart(2, '0') }}</span>
               <span class="menu-link-label">{{ cat.label }}</span>
               <span class="menu-link-indicator"></span>
             </NuxtLink>
@@ -457,7 +456,6 @@ onUnmounted(() => {
       opacity: 1;
     }
 
-    .menu-link-number,
     .menu-link-label {
       color: #fff;
     }
@@ -494,18 +492,6 @@ onUnmounted(() => {
 
   @media (min-width: 640px) {
     height: 2px;
-  }
-}
-
-.menu-link-number {
-  font-size: 11px;
-  font-weight: 600;
-  color: #c45c4a;
-  letter-spacing: 1px;
-  transition: color 0.3s ease;
-
-  @media (min-width: 768px) {
-    font-size: 11px;
   }
 }
 
