@@ -1,5 +1,5 @@
 <template>
-  <div class="promo-banner">
+  <div class="promo-banner" @click="handleClick">
     <a :href="item.linkUrl" target="_blank" rel="noopener" class="promo-link">
       <!-- 背景图片 -->
       <div class="promo-background">
@@ -26,10 +26,14 @@ interface PromoInfo {
   imageUrl: string
   linkUrl: string
 }
-
-defineProps<{
+const props = defineProps<{
   item: PromoInfo
 }>()
+const adsApi = useAdsApi()
+// 记录广告点击
+const handleClick = () => {
+  adsApi.recordClick(props.item.id)
+}
 </script>
 
 <style lang="scss" scoped>
