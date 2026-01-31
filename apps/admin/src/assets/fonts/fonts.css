@@ -1,5 +1,5 @@
 /**
- * 自定义字体声明
+ * 自定义字体声明 - 使用 woff2 格式优化加载
  */
 
 /* ========== 中文字体 ========== */
@@ -7,7 +7,7 @@
 /* 方正悠黑 503L (细体) */
 @font-face {
   font-family: 'FZYouHei';
-  src: url('./FZYouHJW_503L.TTF') format('truetype');
+  src: url('./FZYouHJW_503L.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -16,7 +16,7 @@
 /* 方正悠黑 511M (中等) */
 @font-face {
   font-family: 'FZYouHei';
-  src: url('./FZYouHJW_511M.TTF') format('truetype');
+  src: url('./FZYouHJW_511M.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -25,7 +25,7 @@
 /* 方正悠黑 503L 单独字体名 */
 @font-face {
   font-family: 'FZYouHei Light';
-  src: url('./FZYouHJW_503L.TTF') format('truetype');
+  src: url('./FZYouHJW_503L.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -34,7 +34,7 @@
 /* 方正悠黑 511M 单独字体名 */
 @font-face {
   font-family: 'FZYouHei Medium';
-  src: url('./FZYouHJW_511M.TTF') format('truetype');
+  src: url('./FZYouHJW_511M.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -45,7 +45,7 @@
 /* A2 Record Gothic Light */
 @font-face {
   font-family: 'A2 Record Gothic';
-  src: url('./A2RecordGothic-Light.otf') format('opentype');
+  src: url('./A2RecordGothic-Light.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -54,7 +54,7 @@
 /* A2 Record Gothic Regular */
 @font-face {
   font-family: 'A2 Record Gothic';
-  src: url('./A2RecordGothic-Regular.otf') format('opentype');
+  src: url('./A2RecordGothic-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -63,7 +63,7 @@
 /* A2 Record Gothic Medium */
 @font-face {
   font-family: 'A2 Record Gothic';
-  src: url('./A2RecordGothic-Medium.otf') format('opentype');
+  src: url('./A2RecordGothic-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -72,7 +72,7 @@
 /* A2 Record Gothic Extrabold */
 @font-face {
   font-family: 'A2 Record Gothic';
-  src: url('./A2RecordGothic-Extrabold.otf') format('opentype');
+  src: url('./A2RecordGothic-Extrabold.woff2') format('woff2');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -81,7 +81,7 @@
 /* A2 Record Gothic 单独字体名 */
 @font-face {
   font-family: 'A2 Record Gothic Light';
-  src: url('./A2RecordGothic-Light.otf') format('opentype');
+  src: url('./A2RecordGothic-Light.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -89,7 +89,7 @@
 
 @font-face {
   font-family: 'A2 Record Gothic Regular';
-  src: url('./A2RecordGothic-Regular.otf') format('opentype');
+  src: url('./A2RecordGothic-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -97,7 +97,7 @@
 
 @font-face {
   font-family: 'A2 Record Gothic Medium';
-  src: url('./A2RecordGothic-Medium.otf') format('opentype');
+  src: url('./A2RecordGothic-Medium.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -105,7 +105,7 @@
 
 @font-face {
   font-family: 'A2 Record Gothic Extrabold';
-  src: url('./A2RecordGothic-Extrabold.otf') format('opentype');
+  src: url('./A2RecordGothic-Extrabold.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

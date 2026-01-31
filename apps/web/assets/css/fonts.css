@@ -1,4 +1,4 @@
-/* 本地字体定义 */
+/* 本地字体定义 - 使用 woff2 格式优化加载 */
 
 /* Port 字体 - 仅用于英文/拉丁字符 */
 @font-face {
@@ -6,7 +6,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/Port.otf') format('opentype');
+  src: url('/fonts/Port.woff2') format('woff2');
   /* 只匹配拉丁字母、数字、标点符号 */
   unicode-range: U+0000-007F, U+0080-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F;
 }
@@ -16,7 +16,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/fonts/Port.otf') format('opentype');
+  src: url('/fonts/Port.woff2') format('woff2');
   unicode-range: U+0000-007F, U+0080-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F;
 }
 
@@ -25,7 +25,7 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/fonts/Port.otf') format('opentype');
+  src: url('/fonts/Port.woff2') format('woff2');
   unicode-range: U+0000-007F, U+0080-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F;
 }
 
@@ -34,7 +34,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/Port.otf') format('opentype');
+  src: url('/fonts/Port.woff2') format('woff2');
   unicode-range: U+0000-007F, U+0080-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F;
 }
 
@@ -44,7 +44,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/FZYouHJW_508R.TTF') format('truetype');
+  src: url('/fonts/FZYouHJW_508R.woff2') format('woff2');
   /* 匹配中文及其他非拉丁字符 */
   unicode-range:
     U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF,
@@ -56,7 +56,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/fonts/FZYouHJW_508R.TTF') format('truetype');
+  src: url('/fonts/FZYouHJW_508R.woff2') format('woff2');
   unicode-range:
     U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF,
     U+FE10-FE1F, U+FE30-FE4F;
@@ -67,7 +67,7 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/fonts/FZYouHJW_508R.TTF') format('truetype');
+  src: url('/fonts/FZYouHJW_508R.woff2') format('woff2');
   unicode-range:
     U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF,
     U+FE10-FE1F, U+FE30-FE4F;
@@ -78,7 +78,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/FZYouHJW_508R.TTF') format('truetype');
+  src: url('/fonts/FZYouHJW_508R.woff2') format('woff2');
   unicode-range:
     U+4E00-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF, U+2E80-2EFF, U+3100-312F, U+31A0-31BF,
     U+FE10-FE1F, U+FE30-FE4F;
@@ -87,7 +87,7 @@
 /* 方正悠黑 512B (粗体) */
 @font-face {
   font-family: 'FZYouHei Bold';
-  src: url('/fonts/FZYouHJW_512B.TTF') format('truetype');
+  src: url('/fonts/FZYouHJW_512B.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -96,7 +96,7 @@
 /* 方正悠黑 513B (特粗) */
 @font-face {
   font-family: 'FZYouHei ExtraBold';
-  src: url('/fonts/FZYouHJW_513B.TTF') format('truetype');
+  src: url('/fonts/FZYouHJW_513B.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -107,7 +107,7 @@
 /* 方正悠黑 503L (细体) */
 @font-face {
   font-family: 'FZYouHei Light';
-  src: url('/fonts/FZYouHJW_503L.TTF') format('truetype');
+  src: url('/fonts/FZYouHJW_503L.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -116,7 +116,7 @@
 /* 方正悠黑 511M (中等) */
 @font-face {
   font-family: 'FZYouHei Medium';
-  src: url('/fonts/FZYouHJW_511M.TTF') format('truetype');
+  src: url('/fonts/FZYouHJW_511M.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -125,7 +125,7 @@
 /* A2 Record Gothic Light */
 @font-face {
   font-family: 'A2 Record Gothic Light';
-  src: url('/fonts/A2RecordGothic-Light.otf') format('opentype');
+  src: url('/fonts/A2RecordGothic-Light.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -134,7 +134,7 @@
 /* A2 Record Gothic Regular */
 @font-face {
   font-family: 'A2 Record Gothic Regular';
-  src: url('/fonts/A2RecordGothic-Regular.otf') format('opentype');
+  src: url('/fonts/A2RecordGothic-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -143,7 +143,7 @@
 /* A2 Record Gothic Medium */
 @font-face {
   font-family: 'A2 Record Gothic Medium';
-  src: url('/fonts/A2RecordGothic-Medium.otf') format('opentype');
+  src: url('/fonts/A2RecordGothic-Medium.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -152,7 +152,7 @@
 /* A2 Record Gothic Extrabold */
 @font-face {
   font-family: 'A2 Record Gothic Extrabold';
-  src: url('/fonts/A2RecordGothic-Extrabold.otf') format('opentype');
+  src: url('/fonts/A2RecordGothic-Extrabold.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
