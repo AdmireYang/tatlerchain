@@ -252,24 +252,56 @@ setup_nginx_config() {
     
     # 使用 envsubst 从模板生成配置
     log_info "从模板生成 Nginx 配置..."
+    log_info "  DOMAIN_NAME: ${DOMAIN_NAME:-未设置}"
     log_info "  API_PORT: ${API_PORT:-3001}"
     log_info "  WEB_PORT: ${WEB_PORT:-3003}"
     log_info "  ADMIN_PORT: ${ADMIN_PORT:-8080}"
     log_info "  ADMIN_INTERNAL_PORT: ${ADMIN_INTERNAL_PORT:-8081}"
     
+    # 检查域名是否配置
+    if [ -z "$DOMAIN_NAME" ]; then
+        log_error "请在 .env 文件中配置 DOMAIN_NAME"
+        log_info "示例: DOMAIN_NAME=tatlerchain.com"
+        exit 1
+    fi
+    
+    # 检查 SSL 证书是否存在
+    if [ ! -f "/etc/nginx/ssl/${DOMAIN_NAME}.pem" ] || [ ! -f "/etc/nginx/ssl/${DOMAIN_NAME}.key" ]; then
+        log_warn "SSL 证书文件不存在！"
+        log_info ""
+        log_info "请上传证书文件到服务器："
+        log_info "  /etc/nginx/ssl/${DOMAIN_NAME}.pem  (证书文件)"
+        log_info "  /etc/nginx/ssl/${DOMAIN_NAME}.key  (私钥文件)"
+        log_info ""
+        log_info "可以使用 SFTP 上传："
+        log_info "  mkdir -p /etc/nginx/ssl"
+        log_info "  然后用 SFTP 上传 .pem 和 .key 文件"
+        exit 1
+    fi
+    
     # 设置默认值（envsubst 需要变量存在）
+    export DOMAIN_NAME=${DOMAIN_NAME}
     export API_PORT=${API_PORT:-3001}
     export WEB_PORT=${WEB_PORT:-3003}
-    # 设置默认值
     export ADMIN_PORT=${ADMIN_PORT:-8080}
     export ADMIN_INTERNAL_PORT=${ADMIN_INTERNAL_PORT:-8081}
     
-    envsubst '${API_PORT} ${WEB_PORT} ${ADMIN_PORT} ${ADMIN_INTERNAL_PORT}' < "$NGINX_TEMPLATE" > /etc/nginx/sites-available/tatlerchain
+    envsubst '${DOMAIN_NAME} ${API_PORT} ${WEB_PORT} ${ADMIN_PORT} ${ADMIN_INTERNAL_PORT}' < "$NGINX_TEMPLATE" > /etc/nginx/sites-available/tatlerchain
 
     rm -f /etc/nginx/sites-enabled/default
     ln -sf /etc/nginx/sites-available/tatlerchain /etc/nginx/sites-enabled/
-    nginx -t && systemctl reload nginx
-    log_info "Nginx 配置完成 ✓"
+    
+    # 测试配置
+    if nginx -t; then
+        systemctl reload nginx
+        log_info "Nginx 配置完成 ✓"
+        log_info "网站已启用 HTTPS + HTTP/2"
+        log_info "  主站: https://${DOMAIN_NAME}"
+        log_info "  Admin: https://${DOMAIN_NAME}:${ADMIN_PORT}"
+    else
+        log_error "Nginx 配置测试失败，请检查配置"
+        exit 1
+    fi
 }
 
 # ============================================
